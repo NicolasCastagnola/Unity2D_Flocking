@@ -6,13 +6,13 @@ using UnityEngine;
 public class Composite : FlockBehaviour
 {
     public FlockBehaviour[] behaviours;
-
     public float[] weights;
-    public override Vector2 CalculateMove(FlockAgent _agent, List<Transform> _context, Flock _flock)
+
+    public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock)
     {
         if (weights.Length != behaviours.Length)
         {
-            Debug.LogError($"Data missmatch in" + name, this);
+            Debug.LogError("Data mismatch in " + name, this);
             return Vector2.zero;
         }
 
@@ -20,11 +20,11 @@ public class Composite : FlockBehaviour
 
         for (int i = 0; i < behaviours.Length; i++)
         {
-            Vector2 partialMove = behaviours[i].CalculateMove(_agent, _context, _flock) * weights[i];
+            Vector2 partialMove = behaviours[i].CalculateMove(agent, context, flock) * weights[i];
 
             if (partialMove != Vector2.zero)
             {
-                if(partialMove.sqrMagnitude > Mathf.Pow(weights[i], 2))
+                if (partialMove.sqrMagnitude > weights[i] * weights[i])
                 {
                     partialMove.Normalize();
                     partialMove *= weights[i];

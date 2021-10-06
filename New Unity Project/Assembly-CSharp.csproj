@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Food.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -104,8 +105,8 @@
     <Compile Include="Assets\Scripts\Behaviours\Scripts\SeekFood.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\StayInRadius.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\SteeredCohesion.cs" />
-    <Compile Include="Assets\Scripts\Filters\ContextFilter.cs" />
-    <Compile Include="Assets\Scripts\Filters\FilteredFlockBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Filters\Scripts\ContextFilter.cs" />
+    <Compile Include="Assets\Scripts\Filters\Scripts\FilteredFlockBehaviour.cs" />
     <Compile Include="Assets\Scripts\Filters\Scripts\PhysicsLayerFilter.cs" />
     <Compile Include="Assets\Scripts\Filters\Scripts\SameFlockFilter.cs" />
     <Compile Include="Assets\Scripts\Flock\Flock.cs" />
@@ -113,6 +114,10 @@
     <Compile Include="Assets\Scripts\Flock\FlockBehaviour.cs" />
     <Compile Include="Assets\Scripts\FramerateCounter.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Hunter\FSM\FiniteStateMachine.cs" />
+    <Compile Include="Assets\Scripts\Hunter\Hunter.cs" />
+    <Compile Include="Assets\Scripts\Interfaces.cs" />
+    <Compile Include="Assets\Scripts\Utils.cs" />
     <None Include="Assets\Imported\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Imported\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\Imported\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />

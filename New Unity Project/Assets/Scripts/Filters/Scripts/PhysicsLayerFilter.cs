@@ -6,15 +6,17 @@ using UnityEngine;
 public class PhysicsLayerFilter : ContextFilter
 {
     public LayerMask mask;
+
     public override List<Transform> Filter(FlockAgent agent, List<Transform> original)
     {
         List<Transform> filtered = new List<Transform>();
-
         foreach (Transform item in original)
         {
-            if (mask == (mask | (1 << item.gameObject.layer))) { filtered.Add(item); }  
+            if (mask == (mask | (1 << item.gameObject.layer)) || item.gameObject.layer == 8)
+            {
+                filtered.Add(item);
+            }
         }
-
         return filtered;
     }
 }

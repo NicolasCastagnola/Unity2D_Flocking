@@ -4,24 +4,39 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "Flock/Behaviour/SeekFood")]
 
-public class SeekFood : FlockBehaviour
+public class SeekFood : FilteredFlockBehaviour
 {
-    public override Vector2 CalculateMove(FlockAgent _agent, List<Transform> _context, Flock _flock)
+    public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock)
     {
-        if (_context.Count == 0)
+        if (context.Count == 0)
             return Vector2.zero;
 
-        Vector2 cohesionMove = Vector2.zero;
+        Vector2 seekMove = Vector2.zero;
 
-        foreach (Transform item in _context)
+        int n_Seek = 0;
+
+        List<Transform> filteredContext = (filter == null) ? context : filter.Filter(agent, context);
+
+        foreach (Transform item in filteredContext)
         {
-            cohesionMove += (Vector2)item.position;
+            Food food = item.gameObject.GetComponent<Food>();
+            
+            if (food != null)
+            {
+                if (Vector2.SqrMagnitude(food.transform.position - agent.transform.position) <= flock.SquareSeekRadius  * 10)
+                {
+                    n_Seek++;
+                    seekMove = food.transform.position - agent.transform.position;
+                    seekMove.Normalize();
+
+                    if (Vector2.Distance(food.transform.position, agent.transform.position) <= 0.2)
+                    {
+                        food.Destroy();
+                    }
+                }
+            }
         }
 
-        cohesionMove /= _context.Count;
-
-        cohesionMove -= (Vector2)_agent.transform.position;
-
-        return cohesionMove;
+        return seekMove;
     }
 }
