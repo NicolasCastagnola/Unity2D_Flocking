@@ -1,4 +1,2 @@
 # Unity2D_Flocking_Simulation
-![Alt text](https://github.com/NicolasCastagnola/Unity2D_Flocking_Simulation/blob/master/Demo Media/0034.jpg?raw=true)
-
-![Alt text](Demo Media/0034.jpg?raw=true "Title")
+![img](https://gyazo.com/0175b3d25296e8bb13c9b45d74c5c5a5)
