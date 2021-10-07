@@ -7,3 +7,7 @@
 - [SteerCohesion]
 - [Seek]
 - [Flee]
+
+## Reference papers:
+- [Boids, Background and Update (Craig W. Reynolds)](http://www.red3d.com/cwr/boids/)
+- [Steering Behaviors For Autonomous Characters (Craig W. Reynolds)](http://www.red3d.com/cwr/steer/gdc99/)
