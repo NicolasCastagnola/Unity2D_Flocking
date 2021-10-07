@@ -1,7 +1,7 @@
 # Unity2D_Flocking_Simulation
 ![img](https://i.gyazo.com/0175b3d25296e8bb13c9b45d74c5c5a5.png)
 ## Behaviours
-###Compostie:
+### Compostie:
 -Alignment
 -Avoidance
 -Cohesion
