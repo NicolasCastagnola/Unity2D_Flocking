@@ -12,3 +12,4 @@ https://user-images.githubusercontent.com/49046616/136310919-6c7e73e3-b9ed-4228-
 ## Reference papers:
 - [Boids, Background and Update (Craig W. Reynolds)](http://www.red3d.com/cwr/boids/)
 - [Steering Behaviors For Autonomous Characters (Craig W. Reynolds)](http://www.red3d.com/cwr/steer/gdc99/)
+- [State Machine Coding Styles for Synthesis](http://www.sunburst-design.com/papers/CummingsSNUG1998SJ_FSM.pdf)
