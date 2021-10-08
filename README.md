@@ -5,7 +5,6 @@ https://user-images.githubusercontent.com/49046616/136310919-6c7e73e3-b9ed-4228-
 - Alignment
 - Avoidance
 - Cohesion
-- SteerCohesion
 - Seek
 - Flee
 
