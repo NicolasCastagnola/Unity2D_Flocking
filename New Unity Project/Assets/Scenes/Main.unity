@@ -595,7 +595,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40.83, y: -13.099976}
+  m_AnchoredPosition: {x: 40.829987, y: -13.0998535}
   m_SizeDelta: {x: 72.92, y: 19.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &573622845
@@ -1216,6 +1216,16 @@ PrefabInstance:
       propertyPath: waypoints.Array.data[3]
       value: 
       objectReference: {fileID: 1408575508}
+    - target: {fileID: 1263277729888001118, guid: 00a6e92570fbff445b4528bd6dc47359,
+        type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time
+      value: 0.5868468
+      objectReference: {fileID: 0}
+    - target: {fileID: 1263277729888001118, guid: 00a6e92570fbff445b4528bd6dc47359,
+        type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.2020635
+      objectReference: {fileID: 0}
     - target: {fileID: 5924569764984220257, guid: 00a6e92570fbff445b4528bd6dc47359,
         type: 3}
       propertyPath: m_Name
@@ -1647,7 +1657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 38.16, y: -13.559998}
+  m_AnchoredPosition: {x: 38.160004, y: -13.559814}
   m_SizeDelta: {x: 80.89, y: 29.88}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1859508776
