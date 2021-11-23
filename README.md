@@ -1,5 +1,8 @@
 # Unity2D Flocking Simulation
-https://user-images.githubusercontent.com/49046616/136310919-6c7e73e3-b9ed-4228-aaba-1f52390c4fe3.mp4
+
+
+https://user-images.githubusercontent.com/49046616/142976486-17b31201-0b44-4ae4-8685-f733381849c8.mp4
+
 
 ## Flocking behaviours applied:
 - Alignment
