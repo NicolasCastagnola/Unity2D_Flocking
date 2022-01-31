@@ -64,7 +64,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Food.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -99,6 +98,7 @@
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\Alignment.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\Scripts\Arrive.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\Avoidance.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\Cohesion.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\Composite.cs" />
@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\Flock\Flock.cs" />
     <Compile Include="Assets\Scripts\Flock\FlockAgent.cs" />
     <Compile Include="Assets\Scripts\Flock\FlockBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Food.cs" />
     <Compile Include="Assets\Scripts\FramerateCounter.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Hunter\FSM\FiniteStateMachine.cs" />
