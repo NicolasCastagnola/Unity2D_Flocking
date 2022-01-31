@@ -6,6 +6,7 @@ using UnityEngine;
 public class Composite : FlockBehaviour
 {
     public FlockBehaviour[] behaviours;
+    [Range(0.1f, 10f)]
     public float[] weights;
 
     public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock)

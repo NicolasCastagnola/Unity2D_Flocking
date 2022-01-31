@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
@@ -10,6 +11,7 @@ public class FramerateCounter : MonoBehaviour
     private float _refreshTime = 0.1f;
     public TextMeshProUGUI textDisplay;
 
+    [SerializeField] Slider fovSlider;
     private void Update()
     {
         Calculate();
@@ -29,4 +31,11 @@ public class FramerateCounter : MonoBehaviour
             textDisplay.text = "FPS: " + lastFrame.ToString("00.0");
         }
     }
+
+    public void OnFOVSliderValueChanged()
+    {
+        Camera.main.orthographicSize = fovSlider.value;
+    }
+
+
 }

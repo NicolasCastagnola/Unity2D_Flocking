@@ -12,6 +12,8 @@ public class Flock : MonoBehaviour
     List<FlockAgent> agents = new List<FlockAgent>();
     public FlockBehaviour behavior;
 
+    [SerializeField] Composite weightController;
+
     [Range(10, 500)]
     public int startingCount = 150;
     const float AgentDensity = 0.08f;
@@ -42,12 +44,13 @@ public class Flock : MonoBehaviour
 
     [SerializeField] Slider quantitySlider;
     [SerializeField] Slider speedSlider;
-    [SerializeField] Slider alignmentSlider;
-    [SerializeField] Slider avoidanceSlider;
-    [SerializeField] Slider cohesionSlider;
-    [SerializeField] Slider seekSlider;
-    [SerializeField] Slider fleeSlider;
+    [SerializeField] Slider neighbourRadiusSlider;
+    [SerializeField] Slider avoidanceRadiusSlider;
+    [SerializeField] Slider driveFactorSlider;
+
     #endregion
+
+    #region Stats
     public void SetSpeedValue()
     {
         maxSpeed = speedSlider.value;
@@ -58,21 +61,49 @@ public class Flock : MonoBehaviour
     }
     public void SetAvoidanceValue()
     {
-        avoidanceRadiusMultiplier = avoidanceSlider.value;
-    }
-    public void SetSeekValue()
-    {
-        avoidanceRadiusMultiplier = seekSlider.value;
+        avoidanceRadiusMultiplier = avoidanceRadiusSlider.value;
     }
     public void SetCohesionValue()
     {
-        driveFactor = cohesionSlider.value;
+        driveFactor = driveFactorSlider.value;
+        Debug.Log(driveFactorSlider.value);
     }
 
     public void SetQuantityValue()
     {
         startingCount = (int)quantitySlider.value;
     }
+    #endregion
+
+    #region Weights
+    [SerializeField] Slider cohesionSlider;
+    [SerializeField] Slider alignmentSlider;
+    [SerializeField] Slider avoidanceSlider;
+    [SerializeField] Slider seekSlider;
+    [SerializeField] Slider fleeSlider;
+    public void SetCohesionWeight()
+    {
+        weightController.weights[0] = cohesionSlider.value;
+        Debug.Log(cohesionSlider.value);
+    }
+    public void SetAlignmentWeight()
+    {
+        weightController.weights[1] = alignmentSlider.value;
+    }
+    public void SetAvoidanceWeight()
+    {
+        weightController.weights[2] = avoidanceSlider.value;
+    }
+    public void SetSeekWeight()
+    {
+        weightController.weights[4] = cohesionSlider.value;
+    }
+    public void SetFleeWeight()
+    {
+        weightController.weights[5] = cohesionSlider.value;
+    }
+    #endregion
+
     #endregion
 
 

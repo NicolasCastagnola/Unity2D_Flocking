@@ -30,5 +30,6 @@ public class FlockAgent : MonoBehaviour
     public void Kill()
     {
         agentFlock.RemoveAgentFromList(this);
+        Debug.Log("KIll");
     }
 }

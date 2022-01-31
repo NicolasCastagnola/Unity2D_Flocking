@@ -8,7 +8,10 @@ public class Cohesion : FilteredFlockBehaviour
     public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock)
     {
         if (context.Count == 0)
+        {
+            Debug.Log("hola");
             return Vector2.zero;
+        }
 
         Vector2 cohesionMove = Vector2.zero;
         List<Transform> filteredContext = (filter == null) ? context : filter.Filter(agent, context);
