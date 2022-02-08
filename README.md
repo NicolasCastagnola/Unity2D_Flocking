@@ -1,7 +1,6 @@
 # Unity2D Flocking Behaviours
 
-
-https://user-images.githubusercontent.com/49046616/142976486-17b31201-0b44-4ae4-8685-f733381849c8.mp4
+<a href="https://www.youtube.com/watch?v=7VvWwC-T_ZU"></a>
 
 
 ## Flocking behaviours applied:
