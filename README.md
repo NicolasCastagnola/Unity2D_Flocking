@@ -1,8 +1,6 @@
 # Unity2D Flocking Behaviours
 
-
-https://user-images.githubusercontent.com/49046616/152942617-a2b3bb61-50fa-49d3-bd99-78b67f30cdf1.mp4
-
+https://user-images.githubusercontent.com/49046616/152942734-9511384b-0c99-4a40-bb8d-b5f83ceaf1d6.mp4
 
 ## Flocking behaviours applied:
 - Alignment
