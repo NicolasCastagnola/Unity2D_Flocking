@@ -162,7 +162,6 @@ public class Flock : MonoBehaviour
         foreach (FlockAgent agent in agents)
         {
             List<Transform> context = GetNearbyObjects(agent);
-
             Vector2 move = behavior.CalculateMove(agent, context, this);
             move *= driveFactor;
             if (move.sqrMagnitude > squareMaxSpeed)
@@ -174,20 +173,24 @@ public class Flock : MonoBehaviour
         }
     }
 
+
+    //---------------IA2-P1------------------
     List<Transform> GetNearbyObjects(FlockAgent agent)
     {
         List<Transform> context = new List<Transform>();
 
         Collider2D[] contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
 
-        foreach (Collider2D c in contextColliders)
+        /*foreach (Collider2D c in contextColliders)
         {
             if (c != agent.AgentCollider)
             {
                 context.Add(c.transform);
             }
-        }
-
-        return context;
+        }*/
+        
+        //return context;
+      
+        return contextColliders.Where(c => c != agent.AgentCollider).Select(c => c.transform).ToList();
     }
 }
