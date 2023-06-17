@@ -28,5 +28,5 @@ public static class Extensions
         text.Append("]");
         Debug.Log($"{text}");
         return showList;
-     }
+    }
 }

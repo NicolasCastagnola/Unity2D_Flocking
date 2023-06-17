@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 [CreateAssetMenu(menuName = "Flock/Behaviour/Arrive")]
 public class Arrive : FilteredFlockBehaviour
 {
