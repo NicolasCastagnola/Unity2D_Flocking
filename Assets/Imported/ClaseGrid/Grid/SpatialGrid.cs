@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 using Sirenix.OdinInspector;
+using UnityEditor;
 
 public class SpatialGrid : MonoBehaviour
 {
@@ -65,7 +66,7 @@ public class SpatialGrid : MonoBehaviour
         }
     }
 
-    public void UpdateEntity(GridEntity entity)
+    private void UpdateEntity(GridEntity entity)
     {
         var lastPos = lastPositions.TryGetValue(entity, out var position) ? position : Outside;
         var currentPos = GetPositionInGrid(entity.gameObject.transform.position);
@@ -222,10 +223,27 @@ public class SpatialGrid : MonoBehaviour
         else
         {
             int connections = 0;
+            
             foreach (var elem in buckets)
             {
                 foreach(var ent in elem)
                 {
+                    int number = elem.Count();
+                    
+                    var numberStyle = new GUIStyle
+                    {
+                        normal =
+                        {
+                            textColor = Color.white
+                        },
+                        fontSize = 20
+                    };
+
+                    var numberText = number.ToString();
+                    var position = ent.transform.position;
+                    
+                    Handles.Label(position, numberText, numberStyle);
+                    
                     foreach (var n in elem.Where(x => x != ent))
                     {
                         Gizmos.DrawLine(ent.transform.position, n.transform.position);
