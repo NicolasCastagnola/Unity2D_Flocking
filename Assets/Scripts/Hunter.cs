@@ -7,6 +7,7 @@ using System.Linq;
 [Flags]
 public enum HunterStates : ushort { None, Rest, Pursuit, Patrol }
 
+//IA2-P3
 public class Hunter : MonoBehaviour
 {
     //Pursuit stuff
@@ -15,12 +16,10 @@ public class Hunter : MonoBehaviour
     private float time = 0f;
     //patrol stuff
     private float stateTimer = 10f;
-
-
   
     private EventFSM<HunterStates> _finiteStateMachine;
     private SpriteRenderer _spriteRenderer;
-    public string currentStateDisplay;
+    [ShowInInspector, ReadOnly] public string CurrentStateDisplay => _finiteStateMachine?.Current.Name;
 
     public Transform[] waypoints;
     private int waypointIndex = 0;
@@ -87,8 +86,6 @@ public class Hunter : MonoBehaviour
         if (energy >= 1)
             _finiteStateMachine.SendInput(HunterStates.Patrol);
 
-        currentStateDisplay = "REST";
-
         if (energy <= 0f)
         {
             speed = 0;
@@ -135,8 +132,6 @@ public class Hunter : MonoBehaviour
 
             _spriteRenderer.color = Color.red;
         
-            currentStateDisplay = "PURSUIT";
-
             if (!targetAcquiredFlag)
             {
                 CheckProximity();
@@ -227,8 +222,6 @@ public class Hunter : MonoBehaviour
     }
     public void SetPatrolBehaviour()
     {
-        currentStateDisplay = "PATROL";
-
         if (Vector2.Distance(waypoints[waypointIndex].position, transform.position) < distanceToChangeWaypoint)
         {
             waypointIndex++;
