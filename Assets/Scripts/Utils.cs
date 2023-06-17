@@ -21,7 +21,7 @@ public class Utils : MonoBehaviour
         {
             if (lineRenderer == null)
             {
-                GameObject lineObj = new GameObject("LineObj");
+                var lineObj = new GameObject("LineObj");
                 lineRenderer = lineObj.AddComponent<LineRenderer>();
                 lineRenderer.material = new Material(Shader.Find("Hidden/Internal-Colored"));
                 this.lineSize = lineSize;
