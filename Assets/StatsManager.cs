@@ -13,6 +13,7 @@ public class StatsManager : MonoBehaviour
 
     public TextMeshProUGUI framesDisplay;
     public TextMeshProUGUI memoryDisplay;
+    public TextMeshProUGUI currentBoidsDisplay;
 
     private void Update() => CalculateStats();
     private void CalculateStats()
@@ -31,5 +32,7 @@ public class StatsManager : MonoBehaviour
         }
 
         memoryDisplay.text = $"Total Memory: {GC.GetTotalMemory(true) / (1024f * 1024f):f2} MB";
+        
+        currentBoidsDisplay.text = $"Total Boids: {GameManager.Instance.flockManager.GetTotalAgents.Count}";
     }
 }

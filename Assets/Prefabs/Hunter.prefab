@@ -63,17 +63,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e72138ec31d8ee0418a50f73e6cebc88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStateDisplay: 
+  isOnGrid: 0
+  _spriteRenderer: {fileID: 5924569765790077172}
+  energyDrainTicks: 0.1
+  interpolationPeriod: 2
   waypoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  distanceToChangeWaypoint: 0.2
+  proximityRadius: 2.85
   speed: 5.2
+  recoveryTime: 5
   _totalEnergy: 1
   energy: 1
-  proximityRadius: 2.85
-  targetAcquiredFlag: 0
 --- !u!96 &1263277729888001118
 TrailRenderer:
   serializedVersion: 2

@@ -4,15 +4,14 @@ using IA2;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using System.Linq;
+
 [Flags]
-public enum HunterStates : ushort { None, Rest, Pursuit, Patrol }
+public enum HunterStates { None, Rest, Pursuit, Patrol }
 
 //IA2-P3
 public class Hunter : GridEntity
 {
-    private SpriteRenderer _spriteRenderer;
-    public Transform Target { get; private set; }
-    
+    private Transform Target { get; set; }
     [ShowInInspector, ReadOnly, TabGroup("States")] public string CurrentStateDisplay => _finiteStateMachine?.Current.Name;
     [ShowInInspector, ReadOnly, TabGroup("States")] private EventFSM<HunterStates> _finiteStateMachine;
     
@@ -26,6 +25,7 @@ public class Hunter : GridEntity
     [ShowInInspector, ReadOnly, TabGroup("Waypoints Properties")] private int waypointIndex;
     [SerializeField, TabGroup("Waypoints Properties")]private float distanceToChangeWaypoint = .2f;
     
+    [TabGroup("Hunter Properties"),SerializeField, Required] private SpriteRenderer _spriteRenderer;
     [TabGroup("Hunter Properties"), Range(1f,20f)] public float proximityRadius;
     [TabGroup("Hunter Properties"), Range(0f,10f)] public float speed;
     [TabGroup("Hunter Properties"), Range(0f,10f)] public float recoveryTime = 5f;
@@ -33,12 +33,7 @@ public class Hunter : GridEntity
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
     
-    private void Awake()
-    {
-        _spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
-        
-        InitializeFSMCoreStates();
-    }
+    private void Awake() => InitializeFSMCoreStates();
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
     private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();
@@ -208,17 +203,17 @@ public class Hunter : GridEntity
         hunterTransform.position += _velocity * Time.deltaTime;
         hunterTransform.up = _velocity.normalized;
     }
-    private Vector3 CalculateTrajectory(Transform target) {
-
+    private Vector3 CalculateTrajectory(Transform target)
+    {
         if (target == null) return default;
             
         var desired = target.position - transform.position;
         desired.Normalize();
         desired *= speed;
+        
         return desired;
-
     }
-    public void SetPatrolBehaviour()
+    private void SetPatrolBehaviour()
     {
         if (Vector2.Distance(waypoints[waypointIndex].position, transform.position) < distanceToChangeWaypoint)
         {
