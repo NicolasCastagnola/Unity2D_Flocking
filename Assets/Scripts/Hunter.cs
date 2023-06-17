@@ -3,7 +3,7 @@ using System.Collections;
 using IA2;
 using Sirenix.OdinInspector;
 using UnityEngine;
-
+using System.Linq;
 [Flags]
 public enum HunterStates : ushort { None, Rest, Pursuit, Patrol }
 
@@ -187,21 +187,24 @@ public class Hunter : MonoBehaviour
   #endregion
     private void CheckProximity()
     {
+
+        //---------------IA2-P1------------------
+
         var proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
+        var bTarget = proximity.Select(x => x.GetComponent<FlockAgent>())
+                               .Where(x => x != null)
+                               .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
+                               .FirstOrDefault();
 
-        foreach (var col in proximity)
+        if(bTarget != null)
         {
-            var target = col.GetComponent<FlockAgent>();
-
-            if(col.GetComponent<FlockAgent>())
-            {
-                Target = target.transform;
-                targetAcquiredFlag = true;
-            }
-            else targetAcquiredFlag = false;
-
-            if (target == null)
-                proximityRadius += 1f;
+            Target = bTarget.transform;
+            targetAcquiredFlag = true;
+        }
+        else
+        {
+            targetAcquiredFlag = false;
+            proximityRadius += 1f;
         }
     }
     public void SetWaypoints(Transform[] targetWaypoints) => waypoints = targetWaypoints;
