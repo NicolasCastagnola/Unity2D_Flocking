@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Flocking;
 using UnityEngine;
-
+using System.Linq;
 [CreateAssetMenu(menuName = "Flock/Behaviour/SeekFood")]
 
 public class Seek : FilteredFlockBehaviour
