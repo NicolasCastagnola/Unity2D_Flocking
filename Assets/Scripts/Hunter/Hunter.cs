@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class Hunter : MonoBehaviour
 {
     private FiniteStateMachine _finiteStateMachine;
@@ -50,8 +50,23 @@ public class Hunter : MonoBehaviour
     public void CheckProximity()
     {
         Collider2D[] proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
-
-        foreach (Collider2D collider in proximity)
+        //proximity.PrintCollection();
+        var bTarget = proximity.Select(x => x.GetComponent<FlockAgent>()).Where(x => x != null);//.OrderBy(x => Vector3.Distance(transform.position, x.transform.position)).ToList().FirstOrDefault();
+        bTarget.PrintCollection();
+        /*if(bTarget != null)
+        {
+            _target = bTarget.transform;
+            targetAcquiredFlag = true;
+        }
+        else
+        {
+            targetAcquiredFlag = false;
+        }
+        if (bTarget == null)
+        {
+            proximityRadius += 1f;
+        }*/
+        /*foreach (Collider2D collider in proximity)
         {
             FlockAgent target = collider.GetComponent<FlockAgent>();
 
@@ -68,8 +83,8 @@ public class Hunter : MonoBehaviour
             if (target == null)
             {
                 proximityRadius += 1f;
-            }
-        }
+            
+         }*/
     }
 
     public void Persuit(Vector3 _velocity)
@@ -90,7 +105,6 @@ public class Hunter : MonoBehaviour
         {
             Persuit(CalculateTrajectory(_target));
         }
-
     }
     public Vector3 CalculateTrajectory(Transform target) {
 
@@ -101,7 +115,6 @@ public class Hunter : MonoBehaviour
             desired *= speed;
             return desired;
         }
-
         return default;
     }
     public void SetPatrolBehaviour()
