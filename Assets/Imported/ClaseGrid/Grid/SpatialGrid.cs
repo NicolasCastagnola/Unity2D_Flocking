@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using Sirenix.OdinInspector;
 
 public class SpatialGrid : MonoBehaviour
 {
+    [ShowInInspector, ReadOnly] public int CurrentAgentsInsideGrid => RecursiveWalker(transform).Select(transform1 => transform1.GetComponent<GridEntity>()).Count(entity => entity != null);
     #region Variables
     //punto de inicio de la grilla en X
     public float x;
@@ -37,22 +39,26 @@ public class SpatialGrid : MonoBehaviour
     #endregion
 
     #region FUNCIONES
-    private void Awake()
+    public void Initialize()
     {
         lastPositions = new Dictionary<GridEntity, Tuple<int, int>>();
         buckets = new HashSet<GridEntity>[width, height];
 
         //creamos todos los hashsets
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
+        for (var i = 0; i < width; i++)
+        {
+            for (var j = 0; j < height; j++)
+            {
                 buckets[i, j] = new HashSet<GridEntity>();
+            }
+        }
 
         //P/alumnos: por que no usamos OfType<>() despues del RecursiveWalker() aca?
-        var ents = RecursiveWalker(transform)
-            .Select(x => x.GetComponent<GridEntity>())
-            .Where(x => x != null);
+        var entities = RecursiveWalker(transform)
+            .Select(entityTransform => entityTransform.GetComponent<GridEntity>())
+            .Where(gridEntity => gridEntity != null);
 
-        foreach (var e in ents)
+        foreach (var e in entities)
         {
             e.OnMove += UpdateEntity;
             UpdateEntity(e);

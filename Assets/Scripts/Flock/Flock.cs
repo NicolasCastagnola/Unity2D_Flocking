@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class Flock : MonoBehaviour
 {
     private const float AGENT_DENSITY = 0.08f;
+
+    [SerializeField] private SpatialGrid _spatialGrid;
     
     [SerializeField] private Composite weightController;
     public List<FlockAgent> GetTotalAgents { get; } = new List<FlockAgent>();
@@ -90,6 +92,8 @@ public class Flock : MonoBehaviour
         SquareSeekRadius = Mathf.Pow(seekRadiusMultiplier, 2);
 
         Spawn((int)quantitySlider.value);
+        
+        _spatialGrid.Initialize();
     }
     public void ResetAgents()
     {
@@ -129,7 +133,8 @@ public class Flock : MonoBehaviour
     {
         foreach (var agent in GetTotalAgents)
         {
-            var context = GetNearbyObjects(agent);
+            var context = GetNearbyObjectsInsideSpatialGrid(agent);
+            
             var move = behavior.CalculateMove(agent, context, this);
             
             move *= driveFactor;
@@ -142,10 +147,10 @@ public class Flock : MonoBehaviour
     }
 
     //---------------IA2-P1------------------
-    private List<Transform> GetNearbyObjects(FlockAgent agent)
+    private List<Transform> GetNearbyObjectsInsideSpatialGrid(FlockAgent agent)
     {
-        Collider2D[] contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
+        var contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
+        
         return contextColliders.Where(c => c != agent.AgentCollider).Select(c => c.transform).ToList();
-
     }
 }
