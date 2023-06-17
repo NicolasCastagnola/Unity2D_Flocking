@@ -52,12 +52,10 @@ public class Hunter : MonoBehaviour
     private void OnDestroy() => _finiteStateMachine?.Terminate();
     private void InitializeFSMCoreStates()
     {
-        //Create states
         var Rest = new State<HunterStates>("Rest");
         var Pursuit = new State<HunterStates>("Pursuit");
         var Patrol = new State<HunterStates>("Patrol");
         
-        //Set States transitions
         StateConfigurer.Create(Rest)
                        .SetTransition(HunterStates.Patrol, Patrol)
                        .SetTransition(HunterStates.Pursuit, Pursuit)
@@ -75,22 +73,7 @@ public class Hunter : MonoBehaviour
                        .SetTransition(HunterStates.Pursuit, Pursuit)
                        .SetCallbacks(PatrolStateEnter, PatrolStateUpdate, null, null, PatrolStateExit)
                        .Done();
-        
-        //Configure Actions on each one
-        // Rest.SetCallbacks(
-        //     RestStateEnter,
-        //     RestStateUpdate,
-        //     null,
-        //     null,
-        //     RestStateOnExit);
-        
-        // Pursuit.SetCallbacks(PursuitStateEnter, PursuitStateUpdate);
-        //     
-        // Patrol.SetCallbacks(PatrolStateEnter, PatrolStateUpdate, null, null, PatrolStateExit);
-        //     
-        //     
-        
-        //Create FSm
+
         _finiteStateMachine = new EventFSM<HunterStates>(Rest);
     }
 
@@ -174,11 +157,7 @@ public class Hunter : MonoBehaviour
 
     #region PatrolStateBehaviours
 
-    private void PatrolStateEnter(HunterStates incomingStateInput)
-    {
-        Debug.Log("hola");
-        stateTimer = 10f;
-    }
+    private void PatrolStateEnter(HunterStates incomingStateInput) => stateTimer = 10f;
     private void PatrolStateExit(HunterStates incomingStateInput)
     {
         if (energy > 0.2)
@@ -188,8 +167,6 @@ public class Hunter : MonoBehaviour
     }
     private void PatrolStateUpdate()
     {
-        Debug.Log("hola");
-        
         stateTimer -= Time.deltaTime;
        
         if (energy >= 0)
@@ -208,7 +185,6 @@ public class Hunter : MonoBehaviour
     }
 
   #endregion
-    public void SetWaypoints(Transform[] targetWaypoints) => this.waypoints = targetWaypoints;
     private void CheckProximity()
     {
         var proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
@@ -228,6 +204,7 @@ public class Hunter : MonoBehaviour
                 proximityRadius += 1f;
         }
     }
+    public void SetWaypoints(Transform[] targetWaypoints) => waypoints = targetWaypoints;
     private void Pursuit(Vector3 _velocity)
     {
         var hunterTransform = transform;
@@ -235,19 +212,15 @@ public class Hunter : MonoBehaviour
         hunterTransform.position += _velocity * Time.deltaTime;
         hunterTransform.up = _velocity.normalized;
     }
-    public void SetPersuitBehaviour(){}
-    public void SetRestbehaviour(){}
-    public Vector3 CalculateTrajectory(Transform target) {
+    private Vector3 CalculateTrajectory(Transform target) {
 
-        if (target != null)
-        {
-            Vector3 desired = target.position - transform.position;
-            desired.Normalize();
-            desired *= speed;
-            return desired;
-        }
+        if (target == null) return default;
+            
+        var desired = target.position - transform.position;
+        desired.Normalize();
+        desired *= speed;
+        return desired;
 
-        return default;
     }
     public void SetPatrolBehaviour()
     {
@@ -269,7 +242,7 @@ public class Hunter : MonoBehaviour
             
             direction.Normalize();
             transform.up = direction;
-            position += direction * speed * Time.deltaTime;
+            position += direction * (speed * Time.deltaTime);
             transform.position = position;
             _spriteRenderer.color = Color.yellow;
             targetAcquiredFlag = false;
