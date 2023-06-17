@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
 
         if (hunter != null)
         {
-            hunterState.text = "H_STATE: " + hunter.currentState;   
+            hunterState.text = "H_STATE: " + hunter.currentStateDisplay;   
         }
         else
         {

@@ -139,8 +139,6 @@ public class Personaje : MonoBehaviour
             _myRen.material.color = Color.magenta;
             Debug.Log("Snoop Dog");
         };
-
-
         //Dado que nuestras transiciones son una clase en si, le agregamos la funcionalidad de llamar a una accion al momento de hacerse esa transicion en si
         //Esto es aparte del Exit de los estados!
         //En este caso si pasamos de el estado "jumping" con el input PlayerInputs.JUMP se ejecuta esto

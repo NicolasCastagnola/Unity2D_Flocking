@@ -1,12 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using IA2;
+using Sirenix.OdinInspector;
 using UnityEngine;
+
+[Flags]
+public enum HunterStates : ushort { None, Rest, Pursuit, Patrol }
 
 public class Hunter : MonoBehaviour
 {
-    private FiniteStateMachine _finiteStateMachine;
+    //Pursuit stuff
+    private float energyDrainTicks = 0.1f;
+    private float interpolationPeriod = 2f;
+    private float time = 0f;
+    //patrol stuff
+    private float stateTimer = 10f;
+
+
+  
+    private EventFSM<HunterStates> _finiteStateMachine;
     private SpriteRenderer _spriteRenderer;
-    public string currentState;
+    public string currentStateDisplay;
 
     public Transform[] waypoints;
     private int waypointIndex = 0;
@@ -24,74 +38,205 @@ public class Hunter : MonoBehaviour
     public float proximityRadius;
 
     public bool targetAcquiredFlag = false;
-    public Transform Target { get { return _target; } }
-    private Transform _target;
+    public Transform Target { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
-        _finiteStateMachine = GetComponent<FiniteStateMachine>();
         _spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
-        _finiteStateMachine.AddState(States.Rest, new Rest(this, _finiteStateMachine));
-        _finiteStateMachine.AddState(States.Persuit, new Persuit(this, _finiteStateMachine));
-        _finiteStateMachine.AddState(States.Patrol, new Patrol(this, _finiteStateMachine));
+        
+        InitializeFSMCoreStates();
+    }
+    public void Update() => _finiteStateMachine?.Update();
+    private void LateUpdate() => _finiteStateMachine?.LateUpdate();
+    private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();
+    private void OnDestroy() => _finiteStateMachine?.Terminate();
+    private void InitializeFSMCoreStates()
+    {
+        //Create states
+        var Rest = new State<HunterStates>("Rest");
+        var Pursuit = new State<HunterStates>("Pursuit");
+        var Patrol = new State<HunterStates>("Patrol");
+        
+        //Set States transitions
+        StateConfigurer.Create(Rest)
+                       .SetTransition(HunterStates.Patrol, Patrol)
+                       .SetTransition(HunterStates.Pursuit, Pursuit)
+                       .SetCallbacks(RestStateEnter,RestStateUpdate,null,null, RestStateOnExit)
+                       .Done();
 
-
-        _finiteStateMachine.ChangeState(States.Rest);
+        StateConfigurer.Create(Pursuit)
+                       .SetTransition(HunterStates.Rest, Rest)
+                       .SetTransition(HunterStates.Patrol, Patrol)
+                       .SetCallbacks(PursuitStateEnter, PursuitStateUpdate)
+                       .Done();
+                        
+        StateConfigurer.Create(Patrol)
+                       .SetTransition(HunterStates.Rest, Rest)
+                       .SetTransition(HunterStates.Pursuit, Pursuit)
+                       .SetCallbacks(PatrolStateEnter, PatrolStateUpdate, null, null, PatrolStateExit)
+                       .Done();
+        
+        //Configure Actions on each one
+        // Rest.SetCallbacks(
+        //     RestStateEnter,
+        //     RestStateUpdate,
+        //     null,
+        //     null,
+        //     RestStateOnExit);
+        
+        // Pursuit.SetCallbacks(PursuitStateEnter, PursuitStateUpdate);
+        //     
+        // Patrol.SetCallbacks(PatrolStateEnter, PatrolStateUpdate, null, null, PatrolStateExit);
+        //     
+        //     
+        
+        //Create FSm
+        _finiteStateMachine = new EventFSM<HunterStates>(Rest);
     }
 
-    public void SetWaypoints(Transform[] waypoints)
+    #region RestStateBehaviours
+    private void RestStateEnter(HunterStates incomingStateInput)
     {
-        this.waypoints = waypoints;
+        if (energy < 0) energy = 0;
     }
-    private void Update()
+    private void RestStateUpdate()
     {
-        _finiteStateMachine.OnUpdate();
-    }
-    public void CheckProximity()
-    {
-        Collider2D[] proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
+        if (energy >= 1)
+            _finiteStateMachine.SendInput(HunterStates.Patrol);
 
-        foreach (Collider2D collider in proximity)
+        currentStateDisplay = "REST";
+
+        if (energy <= 0f)
         {
-            FlockAgent target = collider.GetComponent<FlockAgent>();
+            speed = 0;
+            _spriteRenderer.color = Color.green;
+            StartCoroutine(TriggerRecovery());
+        }
+        else speed = 5.2f;
+    }
+    private void RestStateOnExit(HunterStates incomingStateInput) => energy = 1;
+    #endregion
 
-            if(collider.GetComponent<FlockAgent>())
+    #region PursuitStateBehaviours
+
+    private void PursuitStateEnter(HunterStates incomingStateInput)
+    {
+        energyDrainTicks = 0.1f;
+        interpolationPeriod = 2f;
+        time = 0f;
+    }
+    private void PursuitStateUpdate()
+    {
+        if (energy >= 0)
+        {
+            time += Time.deltaTime;
+
+            if (time >= interpolationPeriod)
             {
-                _target = target.transform;
-                targetAcquiredFlag = true;
+                time -= interpolationPeriod;
+                energy -= energyDrainTicks;
+            }
+
+            if (Target)
+            {
+                if (Vector3.Distance(transform.position, Target.position) <= 0.2)
+                {
+                    var a = Target.GetComponent<FlockAgent>();
+                    a.Kill();
+                    energy += 0.20f;
+                    proximityRadius = 2.85f;
+                    _finiteStateMachine.SendInput(HunterStates.Patrol);
+                    
+                }
+            }
+
+            _spriteRenderer.color = Color.red;
+        
+            currentStateDisplay = "PURSUIT";
+
+            if (!targetAcquiredFlag)
+            {
+                CheckProximity();
             }
             else
             {
-                targetAcquiredFlag = false;
+                Pursuit(CalculateTrajectory(Target));
             }
-
-            if (target == null)
-            {
-                proximityRadius += 1f;
-            }
-        }
-    }
-
-    public void Persuit(Vector3 _velocity)
-    {
-        transform.position += _velocity * Time.deltaTime;
-        transform.up = _velocity.normalized;
-    }
-    public void SetPersuitBehaviour()
-    {
-        _spriteRenderer.color = Color.red;
-        currentState = "PERSUIT";
-
-        if (!targetAcquiredFlag)
-        {
-            CheckProximity();
         }
         else
         {
-            Persuit(CalculateTrajectory(_target));
+            _finiteStateMachine.SendInput(HunterStates.Rest);
         }
-
     }
+
+
+    #endregion
+
+    #region PatrolStateBehaviours
+
+    private void PatrolStateEnter(HunterStates incomingStateInput)
+    {
+        Debug.Log("hola");
+        stateTimer = 10f;
+    }
+    private void PatrolStateExit(HunterStates incomingStateInput)
+    {
+        if (energy > 0.2)
+        {
+            energy -= 0.2f; 
+        }
+    }
+    private void PatrolStateUpdate()
+    {
+        Debug.Log("hola");
+        
+        stateTimer -= Time.deltaTime;
+       
+        if (energy >= 0)
+        {
+            SetPatrolBehaviour();
+
+            if (stateTimer <= 0)
+            {
+                _finiteStateMachine.SendInput(HunterStates.Pursuit);
+            }
+        }     
+        else 
+        {
+            _finiteStateMachine.SendInput(HunterStates.Rest);
+        }
+    }
+
+  #endregion
+    public void SetWaypoints(Transform[] targetWaypoints) => this.waypoints = targetWaypoints;
+    private void CheckProximity()
+    {
+        var proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
+
+        foreach (var col in proximity)
+        {
+            var target = col.GetComponent<FlockAgent>();
+
+            if(col.GetComponent<FlockAgent>())
+            {
+                Target = target.transform;
+                targetAcquiredFlag = true;
+            }
+            else targetAcquiredFlag = false;
+
+            if (target == null)
+                proximityRadius += 1f;
+        }
+    }
+    private void Pursuit(Vector3 _velocity)
+    {
+        var hunterTransform = transform;
+        
+        hunterTransform.position += _velocity * Time.deltaTime;
+        hunterTransform.up = _velocity.normalized;
+    }
+    public void SetPersuitBehaviour(){}
+    public void SetRestbehaviour(){}
     public Vector3 CalculateTrajectory(Transform target) {
 
         if (target != null)
@@ -106,7 +251,7 @@ public class Hunter : MonoBehaviour
     }
     public void SetPatrolBehaviour()
     {
-        currentState = "PATROL";
+        currentStateDisplay = "PATROL";
 
         if (Vector2.Distance(waypoints[waypointIndex].position, transform.position) < distanceToChangeWaypoint)
         {
@@ -119,36 +264,21 @@ public class Hunter : MonoBehaviour
         }
         else
         {
-            Vector3 dir = waypoints[waypointIndex].transform.position - transform.position;
-            dir.Normalize();
-            transform.up = dir;
-            transform.position += dir * speed * Time.deltaTime;
+            var position = transform.position;
+            var direction = waypoints[waypointIndex].transform.position - position;
+            
+            direction.Normalize();
+            transform.up = direction;
+            position += direction * speed * Time.deltaTime;
+            transform.position = position;
             _spriteRenderer.color = Color.yellow;
             targetAcquiredFlag = false;
         }      
     }
-
-    public void SetRestbehaviour()
+    private IEnumerator TriggerRecovery()
     {
-        currentState = "REST";
-
-        if (energy <= 0f)
-        {
-            _spriteRenderer.color = Color.green;
-            speed = 0;
-            StartCoroutine(TriggerRecovery());
-        }
-        else
-        {
-            speed = 5.2f;
-        }
-    }
-
-    IEnumerator TriggerRecovery()
-    {
-        
         yield return new WaitForSeconds(_recoveryTime);
 
-         energy = _totalEnergy;
+        energy = _totalEnergy;
     }
 }

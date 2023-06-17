@@ -5,13 +5,16 @@ namespace IA2
 	public class EventFSM<T>
     {
 		public State<T> Current { get { return current; } }
+		
 		private State<T> current;
-
+		
 		public EventFSM(State<T> initial)
         {
 			current = initial;
 			current.Enter(default(T));
 		}
+		
+		public void Terminate(){}
 
 		public void SendInput(T input)
         {
