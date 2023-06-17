@@ -11,7 +11,7 @@ public class Seek : FilteredFlockBehaviour
         if (context.Count == 0)
             return Vector2.zero;
 
-        Vector2 seekMove = Vector2.zero;
+        Vector2 seekMove = Vector2.zero; 
 
         int n_Seek = 0;
 
