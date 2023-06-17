@@ -27,7 +27,7 @@ public class SpatialGrid : MonoBehaviour
     private Dictionary<GridEntity, Tuple<int, int>> lastPositions;
     //los "contenedores"
     private HashSet<GridEntity>[,] buckets;
-
+    
     //el valor de posicion que tienen los elementos cuando no estan en la zona de la grilla.
     /*
      Const es implicitamente statica

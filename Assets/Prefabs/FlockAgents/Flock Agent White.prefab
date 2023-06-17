@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 1181828863189890347}
   - component: {fileID: 2878179298781509748}
   - component: {fileID: 5228384586806940456}
+  - component: {fileID: -5942273097556394626}
   m_Layer: 5
   m_Name: Flock Agent White
   m_TagString: Untagged
@@ -148,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 231d3c0b445d0604a8d2a180ea33364c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOnGrid: 0
   agentFlock: {fileID: 0}
 --- !u!96 &2878179298781509748
 TrailRenderer:
@@ -269,5 +271,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac49b2b6d50c7a749bea4d8294713dac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
-  onGrid: 0
+  isOnGrid: 0
+--- !u!114 &-5942273097556394626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181828863189890346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a13e56912cd12994d84bf893fd779f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isBox: 0
+  radius: 20
+  targetGrid: {fileID: 0}
+  width: 15
+  height: 30

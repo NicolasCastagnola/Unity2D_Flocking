@@ -111,8 +111,11 @@ public class Flock : MonoBehaviour
                 Quaternion.Euler(Vector3.forward * Random.Range(0f, 360f)),
                 transform
             );
+            
+            newAgent.GetComponent<Queries>().Initialize(_spatialGrid);
             newAgent.name = "Agent " + i;
             newAgent.Initialize(this);
+            
             GetTotalAgents.Add(newAgent);
         }
     }
@@ -151,8 +154,8 @@ public class Flock : MonoBehaviour
     //---------------IA2-P1------------------
     private List<Transform> GetNearbyObjectsInsideSpatialGrid(FlockAgent agent)
     {
-        var contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
-        
-        return contextColliders.Where(c => c != agent.AgentCollider).Select(c => c.transform).ToList();
+        //humo
+
+        return default;
     }
 }

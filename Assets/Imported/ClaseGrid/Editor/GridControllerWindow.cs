@@ -71,7 +71,7 @@ public class GridControllerWindow : EditorWindow
             {
                 var g = new GameObject();
                 boxQ = g.AddComponent<Queries>();
-                boxQ.targetGrid = grid;
+                boxQ._targetGrid = grid;
             }
             boxQ.isBox = true;
             grid.AreGizmosShutDown = true; 
@@ -84,7 +84,7 @@ public class GridControllerWindow : EditorWindow
             {
                 var g = new GameObject();
                 boxQ = g.AddComponent<Queries>();
-                boxQ.targetGrid = grid;
+                boxQ._targetGrid = grid;
             }
             boxQ.isBox = false;
             grid.AreGizmosShutDown = true;

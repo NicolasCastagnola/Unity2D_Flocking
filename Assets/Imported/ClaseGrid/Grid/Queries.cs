@@ -7,11 +7,22 @@ public class Queries : MonoBehaviour
 {
     public bool isBox;
     public float radius = 20f;
-    public SpatialGrid targetGrid;
-    public float width = 15f;
-    public float height = 30f;
     public IEnumerable<GridEntity> selected = new List<GridEntity>();
 
+    public SpatialGrid _targetGrid;
+    private float width;
+    private float height;
+
+    public Queries Initialize(SpatialGrid targetGrid)
+    {
+        _targetGrid = targetGrid;
+        width = _targetGrid.width;
+        height = _targetGrid.height;
+        
+        return this;
+    }
+    
+    
     public IEnumerable<GridEntity> Query()
     {
         if (isBox)
@@ -21,7 +32,7 @@ public class Queries : MonoBehaviour
             //posicion inicial --> esquina superior izquierda de la "caja"
             //posición final --> esquina inferior derecha de la "caja"
             //como funcion para filtrar le damos una que siempre devuelve true, para que no filtre nada.
-            return targetGrid.Query(
+            return _targetGrid.Query(
                 transform.position + new Vector3(-w, -h, 0),
                 transform.position + new Vector3(w, h, 0),
                 x => true);
@@ -29,7 +40,7 @@ public class Queries : MonoBehaviour
         else
         {
             //creo una "caja" con las dimensiones deseadas, y luego filtro segun distancia para formar el círculo
-            return targetGrid.Query(
+            return _targetGrid.Query(
                 transform.position + new Vector3(-radius, -radius,0),
                 transform.position + new Vector3(radius,  radius,0),
                 x => {
@@ -42,7 +53,7 @@ public class Queries : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (targetGrid == null)
+        if (_targetGrid == null)
             return;
 
         //Flatten the sphere we're going to draw
@@ -70,10 +81,5 @@ public class Queries : MonoBehaviour
 
         }
     }
-
-
-    private void OnGUI()
-    {
-        GUI.Label( new Rect(0,0,20,20), "HOLA");
-    }
+    private void OnGUI() => GUI.Label( new Rect(0,0,20,20), "HOLA");
 }
