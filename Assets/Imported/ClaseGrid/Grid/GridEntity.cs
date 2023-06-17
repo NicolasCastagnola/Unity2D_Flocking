@@ -1,26 +1,18 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-//[ExecuteInEditMode]
 public class GridEntity : MonoBehaviour
 {
-	public event Action<GridEntity> OnMove = delegate {};
-	public Vector3 velocity = new Vector3(0, 0, 0);
-    public bool onGrid;
-    Renderer _rend;
-
-    private void Awake()
-    {
-        _rend = GetComponent<Renderer>();
-    }
-
-    void Update() {
-        if (onGrid)
-            _rend.material.color = Color.red;
-        else
-            _rend.material.color = Color.gray;
-		//Optimization: Hacer esto solo cuando realmente se mueve y no en el update
-		transform.position += velocity * Time.deltaTime;
-	    OnMove(this);
-	}
+	public event Action<GridEntity> OnMove;
+    [BoxGroup("GridEntity")] public bool isOnGrid;
+ //    private Renderer _renderer;
+ //    private void Awake() => _renderer = GetComponent<Renderer>();
+ //    public void Update() 
+ //    {
+ //        // _renderer.material.color = onGrid ? Color.red : Color.gray;
+	// 	//Optimization: Hacer esto solo cuando realmente se mueve y no en el update
+	//     // OnMove(this);
+	// }
+    protected void MoveCallback() => OnMove?.Invoke(this);
 }

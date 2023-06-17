@@ -1,8 +1,43 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
+public class UI_CollapsableContainer : MonoBehaviour
+{
+    public void Open(){}
+    public void Collapse(){}
+}
+
+public class UserInterfaceManager : BaseMonoSingleton<UserInterfaceManager>
+{
+    [SerializeField] private List<UI_CollapsableContainer> _collapsableContainers;
+    
+    public void CollapseContainer(UI_CollapsableContainer targetContainer)
+    {
+        if (_collapsableContainers.Count == 0) return;
+
+        foreach (var container in _collapsableContainers.Where(container => targetContainer == container))
+        {
+            container.Collapse();
+        }
+    }
+    public void OpenContainer(UI_CollapsableContainer targetContainer)
+    {
+        if (_collapsableContainers.Count == 0) return;
+        
+        foreach (var container in _collapsableContainers)
+        {
+            if (targetContainer == container) container.Open();
+
+            else container.Collapse();
+        }
+    }
+}
+
 
 public class GameManager : BaseMonoSingleton<GameManager>
 {
@@ -36,7 +71,8 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
         if (hunter != null)
         {
-            hunterState.text = "H_STATE: " + hunter.currentStateDisplay;   
+            hunterState.text = "H_STATE: " + hunter.CurrentStateDisplay;   
+            respawnHunterButton.gameObject.SetActive(false);
         }
         else
         {
@@ -44,7 +80,6 @@ public class GameManager : BaseMonoSingleton<GameManager>
             respawnHunterButton.gameObject.SetActive(true);
         }
                 
-
         hunterEnergy.text = "H_ENERGY: " + hunter.energy.ToString("0.00");
 
         if (_shouldSpawnFood)
