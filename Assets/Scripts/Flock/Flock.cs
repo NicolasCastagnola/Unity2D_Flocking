@@ -1,41 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using static Utils;
+using System.Collections.Generic;
 
 public class Flock : MonoBehaviour
 {
-    public List<FlockAgent> GetTotalAgents { get { return agents; } }
+    private const float AGENT_DENSITY = 0.08f;
+    
+    [SerializeField] private Composite weightController;
+    public List<FlockAgent> GetTotalAgents { get; } = new List<FlockAgent>();
     public FlockAgent agentPrefab;
-    List<FlockAgent> agents = new List<FlockAgent>();
     public FlockBehaviour behavior;
 
-    [SerializeField] Composite weightController;
+    [Range(10, 500)] public int startingCount = 150;
+    [Range(1f, 100f)] public float driveFactor = 10f;
+    [Range(5f, 100f)] public float maxSpeed = 5f;
+    [Range(1f, 2f)] public float neighborRadius = 1.5f;
+    [Range(0f, 5f)] public float avoidanceRadiusMultiplier = 0.5f;
+    [Range(0f, 1f)] public float seekRadiusMultiplier = 0.5f;
 
-    [Range(10, 500)]
-    public int startingCount = 150;
-    const float AgentDensity = 0.08f;
-
-    [Range(1f, 100f)]
-    public float driveFactor = 10f;
-    [Range(5f, 100f)]
-    public float maxSpeed = 5f;
-    [Range(1f, 2f)]
-    public float neighborRadius = 1.5f;
-    [Range(0f, 5f)]
-    public float avoidanceRadiusMultiplier = 0.5f;
-    [Range(0f, 1f)]
-    public float seekRadiusMultiplier = 0.5f;
-
-
-    float squareMaxSpeed;
-    float squareNeighborRadius;
-    float squareAvoidanceRadius;
-    float squareSeekRadius;
-    public float SquareAvoidanceRadius { get { return squareAvoidanceRadius; } }
-    public float SquareSeekRadius { get { return squareSeekRadius; } }
+    private float squareMaxSpeed;
+    private float squareNeighborRadius;
+    public float SquareAvoidanceRadius {
+        get;
+        private set;
+    }
+    public float SquareSeekRadius {
+        get;
+        private set;
+    }
 
 
     #region Slider Setters
@@ -51,28 +44,12 @@ public class Flock : MonoBehaviour
     #endregion
 
     #region Stats
-    public void SetSpeedValue()
-    {
-        maxSpeed = speedSlider.value;
-    }
-    public void SetAlingmentValue()
-    {
-        neighborRadius = alignmentSlider.value;
-    }
-    public void SetAvoidanceValue()
-    {
-        avoidanceRadiusMultiplier = avoidanceRadiusSlider.value;
-    }
-    public void SetCohesionValue()
-    {
-        driveFactor = driveFactorSlider.value;
-        Debug.Log(driveFactorSlider.value);
-    }
+    public void SetSpeedValue() => maxSpeed = speedSlider.value;
+    public void SetAlingmentValue() => neighborRadius = alignmentSlider.value;
+    public void SetAvoidanceValue() => avoidanceRadiusMultiplier = avoidanceRadiusSlider.value;
+    public void SetCohesionValue() => driveFactor = driveFactorSlider.value;
+    public void SetQuantityValue() => startingCount = (int)quantitySlider.value;
 
-    public void SetQuantityValue()
-    {
-        startingCount = (int)quantitySlider.value;
-    }
     #endregion
 
     #region Weights
@@ -105,77 +82,67 @@ public class Flock : MonoBehaviour
     #endregion
 
     #endregion
-
-
-    void Start()
+    private void Start()
     {
         squareMaxSpeed = maxSpeed * maxSpeed;
         squareNeighborRadius = neighborRadius * neighborRadius;
-        squareAvoidanceRadius = squareNeighborRadius * avoidanceRadiusMultiplier * avoidanceRadiusMultiplier;
-        squareSeekRadius = Mathf.Pow(seekRadiusMultiplier, 2);
+        SquareAvoidanceRadius = squareNeighborRadius * avoidanceRadiusMultiplier * avoidanceRadiusMultiplier;
+        SquareSeekRadius = Mathf.Pow(seekRadiusMultiplier, 2);
 
         Spawn((int)quantitySlider.value);
     }
-
     public void ResetAgents()
     {
         RemoveAllAgents();
         Spawn((int)quantitySlider.value);
-        GameManager.Instance.agentsDisplay.text = agents.Count.ToString();
+        GameManager.Instance.agentsDisplay.text = GetTotalAgents.Count.ToString();
     }
-
-
-    public void Spawn(int quantity)
+    private void Spawn(int quantity)
     {
-        for (int i = 0; i < quantity; i++)
+        for (var i = 0; i < quantity; i++)
         {
-            FlockAgent newAgent = Instantiate(
+            var newAgent = Instantiate(
                 agentPrefab,
-                Random.insideUnitCircle * quantity * AgentDensity,
+                Random.insideUnitCircle * quantity * AGENT_DENSITY,
                 Quaternion.Euler(Vector3.forward * Random.Range(0f, 360f)),
                 transform
-                );
+            );
             newAgent.name = "Agent " + i;
             newAgent.Initialize(this);
-            agents.Add(newAgent);
+            GetTotalAgents.Add(newAgent);
         }
     }
-
     public void RemoveAgentFromList(FlockAgent agent)
     {
-        agents.Remove(agent);
+        GetTotalAgents.Remove(agent);
     }
-
-    public void RemoveAllAgents()
+    private void RemoveAllAgents()
     {
         for (int i = startingCount - 1; i > 0; i--)
         {
-            agents[i].Kill();
+            GetTotalAgents[i].Kill();
         }
 
-        agents[0].Kill();
+        GetTotalAgents[0].Kill();
     }
-
-
-    void Update()
+    private void Update()
     {
-        foreach (FlockAgent agent in agents)
+        foreach (var agent in GetTotalAgents)
         {
-            List<Transform> context = GetNearbyObjects(agent);
-            Vector2 move = behavior.CalculateMove(agent, context, this);
+            var context = GetNearbyObjects(agent);
+            var move = behavior.CalculateMove(agent, context, this);
+            
             move *= driveFactor;
+            
             if (move.sqrMagnitude > squareMaxSpeed)
-            {
                 move = move.normalized * maxSpeed;
-            }
 
             agent.Move(move);
         }
     }
 
-
     //---------------IA2-P1------------------
-    List<Transform> GetNearbyObjects(FlockAgent agent)
+    private List<Transform> GetNearbyObjects(FlockAgent agent)
     {
         Collider2D[] contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
         return contextColliders.Where(c => c != agent.AgentCollider).Select(c => c.transform).ToList();
