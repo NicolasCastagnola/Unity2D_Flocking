@@ -1,38 +1,39 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class GameManager : BaseMonoSingleton<GameManager>
 {
-    public static GameManager Instance { get { return _instance; } }
-    private static GameManager _instance;
+    private Camera _mainCamera;
     
+    [TabGroup("UI")] public TextMeshProUGUI agentsDisplay;
+    [TabGroup("UI")] public TextMeshProUGUI hunterState;
+    [TabGroup("UI")] public TextMeshProUGUI hunterEnergy;
+    [TabGroup("UI")] public Button respawnHunterButton;
+
+    [TabGroup("Entities")] public Transform[] hunterWaypoints;
+    [TabGroup("Entities")] public Flock flockManager;
+    [TabGroup("Entities")] public Hunter hunter;
+
+    [TabGroup("Prefabs")] public GameObject hunterPrefab;
+    [TabGroup("Prefabs")] public GameObject foodPrefab;
     
-    public Transform[] hunterWaypoints;
+    [SerializeField, TabGroup("Properties")] private float spawnRate = 1f;
+    [SerializeField, TabGroup("Properties")] private bool _shouldSpawn = true;
 
-    public TextMeshProUGUI agentsDisplay;
-    public TextMeshProUGUI hunterState;
-    public TextMeshProUGUI hunterEnergy;
 
-    public Flock flockManager;
-
-    public Hunter hunter;
-    public GameObject hunterPrefab;
-    public Button respawnHunter;
-
-    public GameObject foodGo;
-    private float spawnRate = 1f;
-    bool _shouldSpawn = true;
-
-    private void Awake()
+    protected override void Awake()
     {
-        _instance = this;
+        base.Awake();
+
+        _mainCamera = Camera.main;
     }
+
     private void Update()
     {
-        agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count.ToString();
+        agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count;
 
         if (hunter != null)
         {
@@ -41,7 +42,7 @@ public class GameManager : MonoBehaviour
         else
         {
             hunterState.text = "H_STATE: DIE DUE STARVATION";
-            respawnHunter.gameObject.SetActive(true);
+            respawnHunterButton.gameObject.SetActive(true);
         }
                 
 
@@ -60,31 +61,30 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(spawnRate);
 
-        SpawnFood();
+        SpawnFoodInsideScreenBounds();
 
         _shouldSpawn = true;
     }
 
     public void RespawnHunter()
     {
-        GameObject temp = Instantiate(hunterPrefab, transform);
-        temp.GetComponent<Hunter>().SetWaypoints(hunterWaypoints);
-        respawnHunter.gameObject.SetActive(false);
+        Instantiate(hunterPrefab, transform).GetComponent<Hunter>().SetWaypoints(hunterWaypoints);
+        
+        respawnHunterButton.gameObject.SetActive(false);
     }
-
-    private void SpawnFood()
+    private void SpawnFoodInsideScreenBounds()
     {
         float spawnY = Random.Range(
-            Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, 
-            Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+            _mainCamera.ScreenToWorldPoint(new Vector2(0, 0)).y, 
+            _mainCamera.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
     
         float spawnX = Random.Range(
-            Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, 
-            Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            _mainCamera.ScreenToWorldPoint(new Vector2(0, 0)).x, 
+            _mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
             
 
-        Vector2 spawnPosition = new Vector2(spawnX, spawnY);
+        var spawnPosition = new Vector2(spawnX, spawnY);
 
-        Instantiate(foodGo, spawnPosition, Quaternion.identity);
+        Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
     }
 }
