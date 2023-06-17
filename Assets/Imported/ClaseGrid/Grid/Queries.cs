@@ -61,11 +61,11 @@ public class Queries : MonoBehaviour
             var temp = FindObjectsOfType<GridEntity>().Where(x=>!selected.Contains(x));
             foreach (var item in temp)
             {
-                item.onGrid = false;
+                item.isOnGrid = false;
             }
             foreach (var item in selected)
             {
-                item.onGrid = true;
+                item.isOnGrid = true;
             }
 
         }

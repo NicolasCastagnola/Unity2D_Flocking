@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Flocking;
 
 [CreateAssetMenu(menuName = "Flock/Filter/Physics Layer")]
 public class PhysicsLayerFilter : ContextFilter

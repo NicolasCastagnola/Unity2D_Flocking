@@ -1,4 +1,5 @@
-﻿public abstract class FilteredFlockBehaviour : FlockBehaviour
+﻿using Flocking;
+public abstract class FilteredFlockBehaviour : FlockBehaviour
 {
     public ContextFilter filter;
 }

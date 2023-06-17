@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Flocking;
 [CreateAssetMenu(menuName = "Flock/Filter/Same Flock")]
 public class SameFlockFilter : ContextFilter
 {

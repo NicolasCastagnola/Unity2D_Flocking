@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Flocking;
 using IA2;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,37 +9,31 @@ using UnityEngine;
 public enum HunterStates : ushort { None, Rest, Pursuit, Patrol }
 
 //IA2-P3
-public class Hunter : MonoBehaviour
+public class Hunter : GridEntity
 {
-    //Pursuit stuff
-    private float energyDrainTicks = 0.1f;
-    private float interpolationPeriod = 2f;
-    private float time = 0f;
-    //patrol stuff
-    private float stateTimer = 10f;
-  
-    private EventFSM<HunterStates> _finiteStateMachine;
     private SpriteRenderer _spriteRenderer;
-    [ShowInInspector, ReadOnly] public string CurrentStateDisplay => _finiteStateMachine?.Current.Name;
-
-    public Transform[] waypoints;
-    private int waypointIndex = 0;
-    private float distanceToChangeWaypoint = .2f;
-    
-    [Range(0f,10f)]
-    public float speed;
-
-    [Range(0f,1f)]
-    public float _totalEnergy = 1;
-    public float energy;
-    private float _recoveryTime = 5f;
-    
-    [Range(1f,20f)]
-    public float proximityRadius;
-
-    public bool targetAcquiredFlag = false;
     public Transform Target { get; private set; }
+    
+    [ShowInInspector, ReadOnly, TabGroup("States")] public string CurrentStateDisplay => _finiteStateMachine?.Current.Name;
+    [ShowInInspector, ReadOnly, TabGroup("States")] private EventFSM<HunterStates> _finiteStateMachine;
+    
+    [ShowInInspector, ReadOnly, Header("Pursuit Properties"), TabGroup("States")] private float time;
+    [SerializeField, TabGroup("States")] private float energyDrainTicks = 0.1f;
+    [SerializeField, TabGroup("States")] private float interpolationPeriod = 2f;
+    
+    [ShowInInspector, ReadOnly, Header("Patrol Properties"), TabGroup("States")] private float stateTimer = 10f;
 
+    [TabGroup("Waypoints Properties")] public Transform[] waypoints;
+    [ShowInInspector, ReadOnly, TabGroup("Waypoints Properties")] private int waypointIndex;
+    [SerializeField, TabGroup("Waypoints Properties")]private float distanceToChangeWaypoint = .2f;
+    
+    [TabGroup("Hunter Properties"), Range(1f,20f)] public float proximityRadius;
+    [TabGroup("Hunter Properties"), Range(0f,10f)] public float speed;
+    [TabGroup("Hunter Properties"), Range(0f,10f)] public float recoveryTime = 5f;
+    [TabGroup("Hunter Properties"), Range(0f,1f)] public float _totalEnergy = 1;
+    [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
+    [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
+    
     private void Awake()
     {
         _spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
@@ -107,6 +102,8 @@ public class Hunter : MonoBehaviour
     }
     private void PursuitStateUpdate()
     {
+        MoveCallback();
+        
         if (energy >= 0)
         {
             time += Time.deltaTime;
@@ -167,7 +164,9 @@ public class Hunter : MonoBehaviour
         if (energy >= 0)
         {
             SetPatrolBehaviour();
-
+            
+            MoveCallback();
+            
             if (stateTimer <= 0)
             {
                 _finiteStateMachine.SendInput(HunterStates.Pursuit);
@@ -243,7 +242,7 @@ public class Hunter : MonoBehaviour
     }
     private IEnumerator TriggerRecovery()
     {
-        yield return new WaitForSeconds(_recoveryTime);
+        yield return new WaitForSeconds(recoveryTime);
 
         energy = _totalEnergy;
     }
