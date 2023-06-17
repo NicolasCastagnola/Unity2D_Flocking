@@ -22,16 +22,16 @@ public class Queries : MonoBehaviour
             //posición final --> esquina inferior derecha de la "caja"
             //como funcion para filtrar le damos una que siempre devuelve true, para que no filtre nada.
             return targetGrid.Query(
-                transform.position + new Vector3(-w, 0, -h),
-                transform.position + new Vector3(w, 0, h),
+                transform.position + new Vector3(-w, -h, 0),
+                transform.position + new Vector3(w, h, 0),
                 x => true);
         }
         else
         {
             //creo una "caja" con las dimensiones deseadas, y luego filtro segun distancia para formar el círculo
             return targetGrid.Query(
-                transform.position + new Vector3(-radius, 0, -radius),
-                transform.position + new Vector3(radius, 0, radius),
+                transform.position + new Vector3(-radius, -radius,0),
+                transform.position + new Vector3(radius,  radius,0),
                 x => {
                     var position2d = x - transform.position;
                     position2d.y = 0;
@@ -48,7 +48,7 @@ public class Queries : MonoBehaviour
         //Flatten the sphere we're going to draw
         Gizmos.color = Color.cyan;
         if (isBox)
-            Gizmos.DrawWireCube(transform.position, new Vector3(width, 0, height));
+            Gizmos.DrawWireCube(transform.position, new Vector3(width,  height,0));
         else
         {
             Gizmos.matrix *= Matrix4x4.Scale(Vector3.forward + Vector3.right);

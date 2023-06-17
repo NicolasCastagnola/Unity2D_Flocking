@@ -31,10 +31,9 @@ public class SpatialGrid : MonoBehaviour
      const tengo que ponerle el valor apenas la declaro, readonly puedo hacerlo en el constructor.
      Const solo sirve para tipos de dato primitivos.
      */
-    readonly public Tuple<int, int> Outside = Tuple.Create(-1, -1);
-
+    protected readonly Tuple<int, int> Outside = Tuple.Create(-1, -1);
     //Una colección vacía a devolver en las queries si no hay nada que devolver
-    readonly public GridEntity[] Empty = new GridEntity[0];
+    private readonly GridEntity[] Empty = Array.Empty<GridEntity>();
     #endregion
 
     #region FUNCIONES
@@ -62,7 +61,7 @@ public class SpatialGrid : MonoBehaviour
 
     public void UpdateEntity(GridEntity entity)
     {
-        var lastPos = lastPositions.ContainsKey(entity) ? lastPositions[entity] : Outside;
+        var lastPos = lastPositions.TryGetValue(entity, out var position) ? position : Outside;
         var currentPos = GetPositionInGrid(entity.gameObject.transform.position);
 
         //Misma posición, no necesito hacer nada
@@ -124,7 +123,7 @@ public class SpatialGrid : MonoBehaviour
     {
         //quita la diferencia, divide segun las celdas y floorea
         return Tuple.Create(Mathf.FloorToInt((pos.x - x) / cellWidth),
-                            Mathf.FloorToInt((pos.z - y) / cellHeight));
+                            Mathf.FloorToInt((pos.y - y) / cellHeight));
     }
 
     public bool IsInsideGrid(Tuple<int, int> position)

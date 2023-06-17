@@ -9414,9 +9414,9 @@ MonoBehaviour:
   cellHeight: 7
   width: 15
   height: 15
-  AreGizmosShutDown: 0
-  activatedGrid: 0
-  showLogs: 0
+  AreGizmosShutDown: 1
+  activatedGrid: 1
+  showLogs: 1
 --- !u!4 &1855058230
 Transform:
   m_ObjectHideFlags: 0
