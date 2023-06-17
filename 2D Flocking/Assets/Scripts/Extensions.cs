@@ -17,7 +17,7 @@ public static class Extensions
         var list = showList.ToList();
         for (int i = 0; i < list.Count; i++)
         {
-            text.Append(list[i]);
+            text.Append(list[i].GetType().Name);
 
             if (i != list.Count - 1)
             {

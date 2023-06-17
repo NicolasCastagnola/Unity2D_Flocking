@@ -71,6 +71,7 @@
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Scripts\Utils.cs" />
     <Compile Include="Assets\Scripts\Filters\Scripts\SameFlockFilter.cs" />
+    <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Scripts\Alignment.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
@@ -111,7 +112,6 @@
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Imported\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
     <Compile Include="Assets\Scripts\Filters\Scripts\FilteredFlockBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Imported\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
@@ -767,6 +767,9 @@
     <Reference Include="Unity.Services.Core.Environments">
       <HintPath>Library\ScriptAssemblies\Unity.Services.Core.Environments.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualStudio.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
@@ -793,9 +796,6 @@
     </Reference>
     <Reference Include="Unity.Services.Core">
       <HintPath>Library\ScriptAssemblies\Unity.Services.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

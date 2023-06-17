@@ -8,6 +8,8 @@ public class PhysicsLayerFilter : ContextFilter
 {
     public LayerMask mask;
 
+    //---------------IA2-P1------------------
+
     public override List<Transform> Filter(FlockAgent agent, List<Transform> original)
     {
         /*List<Transform> filtered = new List<Transform>();
@@ -18,9 +20,11 @@ public class PhysicsLayerFilter : ContextFilter
                 filtered.Add(item);
             }
         }*/
-        List<Transform> filtered = original.Where(item =>
-        (mask == (mask | (1 << item.gameObject.layer))) || item.gameObject.layer == 8)
-        .ToList();
+
+        List<Transform> filtered = original
+            .Where(item => 
+            (mask == (mask | (1 << item.gameObject.layer))) || item.gameObject.layer == 8).
+            ToList();
 
         return filtered;
     }
