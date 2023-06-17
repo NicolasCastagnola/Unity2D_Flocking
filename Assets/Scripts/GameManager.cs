@@ -21,8 +21,7 @@ public class GameManager : BaseMonoSingleton<GameManager>
     [TabGroup("Prefabs")] public GameObject foodPrefab;
     
     [SerializeField, TabGroup("Properties")] private float spawnRate = 1f;
-    [SerializeField, TabGroup("Properties")] private bool _shouldSpawn = true;
-
+    [SerializeField, TabGroup("Properties")] private bool _shouldSpawnFood = true;
 
     protected override void Awake()
     {
@@ -48,7 +47,7 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
         hunterEnergy.text = "H_ENERGY: " + hunter.energy.ToString("0.00");
 
-        if (_shouldSpawn)
+        if (_shouldSpawnFood)
         {
             StartCoroutine(SpawnFoodTimer());
         }
@@ -57,13 +56,13 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
     IEnumerator SpawnFoodTimer()
     {
-        _shouldSpawn = false;
+        _shouldSpawnFood = false;
 
         yield return new WaitForSeconds(spawnRate);
 
         SpawnFoodInsideScreenBounds();
 
-        _shouldSpawn = true;
+        _shouldSpawnFood = true;
     }
 
     public void RespawnHunter()

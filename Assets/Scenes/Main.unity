@@ -8440,6 +8440,12 @@ PrefabInstance:
       objectReference: {fileID: 838476845}
     - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
         type: 3}
+      propertyPath: foodPrefab
+      value: 
+      objectReference: {fileID: 3802333509162738928, guid: ba7861f98495e3d4ca71b5b56db83210,
+        type: 3}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
       propertyPath: hunterState
       value: 
       objectReference: {fileID: 1768738667}
@@ -8467,6 +8473,11 @@ PrefabInstance:
     - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
         type: 3}
       propertyPath: respawnHunter
+      value: 
+      objectReference: {fileID: 188351696}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: respawnHunterButton
       value: 
       objectReference: {fileID: 188351696}
     - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
