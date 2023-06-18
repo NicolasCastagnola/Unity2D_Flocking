@@ -17,7 +17,27 @@ public class Seek : FilteredFlockBehaviour
 
         List<Transform> filteredContext = (filter == null) ? context : filter.Filter(agent, context);
 
-        foreach (Transform item in filteredContext)
+        var nearby = filteredContext.Where(x => x.GetComponent<Food>() != null && Vector2.SqrMagnitude(x.transform.position - agent.transform.position) <= flock.SquareSeekRadius * 10).FirstOrDefault();
+        if(nearby != null)
+        {
+            n_Seek++;
+            seekMove = nearby.transform.position - agent.transform.position;
+            seekMove.Normalize();
+            if (Vector2.Distance(nearby.transform.position, agent.transform.position) <= 0.2)
+            {
+
+                var d = nearby.GetComponent<IDestroyable>();
+
+                if (d != null)
+                {
+                    d.Destroy();
+                }
+            }
+        }
+        
+
+
+        /*foreach (Transform item in filteredContext)
         {
             Food food = item.gameObject.GetComponent<Food>();
             
@@ -31,6 +51,7 @@ public class Seek : FilteredFlockBehaviour
 
                     if (Vector2.Distance(food.transform.position, agent.transform.position) <= 0.2)
                     {
+
                         var d = food.GetComponent<IDestroyable>();
 
                         if (d != null)
@@ -40,7 +61,7 @@ public class Seek : FilteredFlockBehaviour
                     }
                 }
             }
-        }
+        }*/
 
         return seekMove;
     }
