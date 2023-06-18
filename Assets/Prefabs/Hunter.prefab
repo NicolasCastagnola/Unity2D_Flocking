@@ -64,15 +64,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOnGrid: 0
-  _spriteRenderer: {fileID: 5924569765790077172}
   energyDrainTicks: 0.1
   interpolationPeriod: 2
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   distanceToChangeWaypoint: 0.2
+  _spriteRenderer: {fileID: 5924569765790077172}
   proximityRadius: 2.85
   speed: 5.2
   recoveryTime: 5
@@ -128,8 +123,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.6126647
-        value: 0.1347112
+        time: 0.5868468
+        value: 0.2020635
         inSlope: 0
         outSlope: 0
         tangentMode: 0

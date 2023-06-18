@@ -21,7 +21,7 @@ public class Hunter : GridEntity
     
     [ShowInInspector, ReadOnly, Header("Patrol Properties"), TabGroup("States")] private float stateTimer = 10f;
 
-    [TabGroup("Waypoints Properties")] public Transform[] waypoints;
+    [TabGroup("Waypoints Properties"), ShowInInspector, ReadOnly] private Transform[] _waypoints;
     [ShowInInspector, ReadOnly, TabGroup("Waypoints Properties")] private int waypointIndex;
     [SerializeField, TabGroup("Waypoints Properties")]private float distanceToChangeWaypoint = .2f;
     
@@ -33,11 +33,18 @@ public class Hunter : GridEntity
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
     
-    private void Awake() => InitializeFSMCoreStates();
+    public Hunter Initialize(Transform[] waypoints)
+    {
+        _waypoints = waypoints;
+        
+        InitializeFSMCoreStates();
+
+        return this;
+    }
+    private void OnDestroy() => _finiteStateMachine?.Terminate();
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
     private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();
-    private void OnDestroy() => _finiteStateMachine?.Terminate();
     private void InitializeFSMCoreStates()
     {
         var Rest = new State<HunterStates>("Rest");
@@ -195,7 +202,6 @@ public class Hunter : GridEntity
             proximityRadius += 1f;
         }
     }
-    public void SetWaypoints(Transform[] targetWaypoints) => waypoints = targetWaypoints;
     private void Pursuit(Vector3 _velocity)
     {
         var hunterTransform = transform;
@@ -215,11 +221,11 @@ public class Hunter : GridEntity
     }
     private void SetPatrolBehaviour()
     {
-        if (Vector2.Distance(waypoints[waypointIndex].position, transform.position) < distanceToChangeWaypoint)
+        if (Vector2.Distance(_waypoints[waypointIndex].position, transform.position) < distanceToChangeWaypoint)
         {
             waypointIndex++;
 
-            if (waypointIndex > waypoints.Length - 1)
+            if (waypointIndex > _waypoints.Length - 1)
             {
                 waypointIndex = 0;
             }
@@ -227,7 +233,7 @@ public class Hunter : GridEntity
         else
         {
             var position = transform.position;
-            var direction = waypoints[waypointIndex].transform.position - position;
+            var direction = _waypoints[waypointIndex].transform.position - position;
             
             direction.Normalize();
             transform.up = direction;

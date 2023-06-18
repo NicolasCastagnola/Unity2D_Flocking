@@ -9,6 +9,7 @@ public class Queries : MonoBehaviour
     public float radius = 20f;
     public IEnumerable<GridEntity> selected = new List<GridEntity>();
 
+    public bool showGizmos;
     public SpatialGrid _targetGrid;
     private float width;
     private float height;
@@ -53,9 +54,8 @@ public class Queries : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (_targetGrid == null)
-            return;
-
+        if (_targetGrid == null || !showGizmos) return;
+             
         //Flatten the sphere we're going to draw
         Gizmos.color = Color.cyan;
         if (isBox)

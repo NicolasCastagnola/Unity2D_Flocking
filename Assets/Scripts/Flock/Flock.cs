@@ -154,8 +154,8 @@ public class Flock : MonoBehaviour
     //---------------IA2-P1------------------
     private List<Transform> GetNearbyObjectsInsideSpatialGrid(FlockAgent agent)
     {
-        //humo
-
-        return default;
+        var contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
+        
+        return contextColliders.Where(c => c != agent.AgentCollider).Select(c => c.transform).ToList();
     }
 }

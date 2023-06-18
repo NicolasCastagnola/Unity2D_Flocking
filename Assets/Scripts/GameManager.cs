@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
     [TabGroup("Entities")] public Transform[] hunterWaypoints;
     [TabGroup("Entities")] public Flock flockManager;
-    [TabGroup("Entities")] public Hunter hunter;
+    [ReadOnly, ShowInInspector] private List<Hunter> activeHunter = new List<Hunter>();
 
     [TabGroup("Prefabs")] public GameObject hunterPrefab;
     [TabGroup("Prefabs")] public GameObject foodPrefab;
@@ -33,19 +34,19 @@ public class GameManager : BaseMonoSingleton<GameManager>
     private void Update()
     {
         agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count;
-
-        if (hunter != null)
-        {
-            hunterState.text = "H_STATE: " + hunter.CurrentStateDisplay;   
-            respawnHunterButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            hunterState.text = "H_STATE: DIE DUE STARVATION";
-            respawnHunterButton.gameObject.SetActive(true);
-        }
-                
-        hunterEnergy.text = "H_ENERGY: " + hunter.energy.ToString("0.00");
+        //
+        // // if (hunter != null)
+        // {
+        //     hunterState.text = "H_STATE: " + hunter.CurrentStateDisplay;   
+        //     respawnHunterButton.gameObject.SetActive(false);
+        // }
+        // else
+        // {
+        //     hunterState.text = "H_STATE: DIE DUE STARVATION";
+        //     respawnHunterButton.gameObject.SetActive(true);
+        // }
+        //         
+        // hunterEnergy.text = "H_ENERGY: " + hunter.energy.ToString("0.00");
 
         if (_shouldSpawnFood)
         {
@@ -54,7 +55,7 @@ public class GameManager : BaseMonoSingleton<GameManager>
     }
 
 
-    IEnumerator SpawnFoodTimer()
+    private IEnumerator SpawnFoodTimer()
     {
         _shouldSpawnFood = false;
 
@@ -65,11 +66,11 @@ public class GameManager : BaseMonoSingleton<GameManager>
         _shouldSpawnFood = true;
     }
 
-    public void RespawnHunter()
+    public void SpawnHunter()
     {
-        Instantiate(hunterPrefab, transform).GetComponent<Hunter>().SetWaypoints(hunterWaypoints);
+        var newHunter = Instantiate(hunterPrefab, transform).GetComponent<Hunter>().Initialize(hunterWaypoints);
         
-        respawnHunterButton.gameObject.SetActive(false);
+        activeHunter.Add(newHunter);
     }
     private void SpawnFoodInsideScreenBounds()
     {
