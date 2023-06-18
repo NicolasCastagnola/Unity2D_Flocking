@@ -2,14 +2,16 @@
 using System;
 public class Food : GridEntity, IDestroyable
 {
-    private void Start()
+    public void Initialize()
     {
         grid = FindObjectOfType<SpatialGrid>();
         grid.AddEntity(this);
+        MoveCallback();
     }
     public void Destroy()
     {
         OnDestroy(this);
+        //OnDestroy -= grid.RemoveEntity;
         Destroy(gameObject);
     }
 }

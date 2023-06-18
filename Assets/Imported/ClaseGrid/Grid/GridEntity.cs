@@ -8,20 +8,8 @@ public class GridEntity : MonoBehaviour
     public Action<GridEntity> OnDestroy = delegate { };
     [BoxGroup("GridEntity")] public bool isOnGrid;
 
-	public SpatialGrid grid;
+    public SpatialGrid grid;
 
-    private void Awake()
-    {
-       // grid = GetComponentInParent<SpatialGrid>();
-       // OnDestroy += grid.RemoveEntity;
-    }
-
-    private void Start()
-    {
-        if(grid != null)
-            grid.AddEntity(this);
-        //MoveCallback();
-    }
     //    private Renderer _renderer;
     //    private void Awake() => _renderer = GetComponent<Renderer>();
     //    public void Update() 
