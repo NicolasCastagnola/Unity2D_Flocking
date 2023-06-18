@@ -99,6 +99,6 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
         var spawnPosition = new Vector2(spawnX, spawnY);
 
-        Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
+        var food = Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
     }
 }

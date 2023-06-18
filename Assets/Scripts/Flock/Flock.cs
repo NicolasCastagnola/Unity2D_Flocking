@@ -112,10 +112,9 @@ public class Flock : MonoBehaviour
                 transform
             );
             
-            newAgent.GetComponent<Queries>().Initialize(_spatialGrid);
+            //newAgent.GetComponent<Queries>().Initialize(_spatialGrid);
             newAgent.name = "Agent " + i;
             newAgent.Initialize(this);
-            
             GetTotalAgents.Add(newAgent);
         }
     }
@@ -135,8 +134,7 @@ public class Flock : MonoBehaviour
     }
     private void Update()
     {
-        //Encargar cada cuadrante de hacer esto
-        // cosas -> si esta vacio return o skip o si hay solo uno no entrar a un loop sino iterar al solo ese
+        
         foreach (var agent in GetTotalAgents)
         {
             var context = agent.GetNearby().Select(c => c.transform).ToList();

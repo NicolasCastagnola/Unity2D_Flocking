@@ -59,12 +59,23 @@ public class SpatialGrid : MonoBehaviour
             .Select(entityTransform => entityTransform.GetComponent<GridEntity>())
             .Where(gridEntity => gridEntity != null);
 
-        foreach (var e in entities)
+        /*foreach (var e in entities)
         {
             e.OnMove += UpdateEntity;
             UpdateEntity(e);
-        }
+        }*/
     }
+
+    public void AddEntity(GridEntity ntt)
+    {
+        ntt.OnMove += UpdateEntity;
+        UpdateEntity(ntt);
+    }
+
+    /*public void RemoveEntity(GridEntity ntt)
+    {
+        ntt.OnMove -= UpdateEntity;
+    }*/
 
     private void UpdateEntity(GridEntity entity)
     {

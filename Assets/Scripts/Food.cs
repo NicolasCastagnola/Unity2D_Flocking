@@ -1,8 +1,15 @@
 ﻿using UnityEngine;
-public class Food : MonoBehaviour, IDestroyable
+using System;
+public class Food : GridEntity, IDestroyable
 {
+    private void Start()
+    {
+        grid = FindObjectOfType<SpatialGrid>();
+        grid.AddEntity(this);
+    }
     public void Destroy()
     {
+        OnDestroy(this);
         Destroy(gameObject);
     }
 }

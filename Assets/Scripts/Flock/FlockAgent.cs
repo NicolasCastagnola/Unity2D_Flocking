@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 public class FlockAgent : GridEntity
 {
     [HideInInspector] public Flock agentFlock;
@@ -8,7 +9,13 @@ public class FlockAgent : GridEntity
     public Collider2D AgentCollider { get; private set; }
     private void Start() => AgentCollider = GetComponent<Collider2D>();
     public void Initialize(Flock flock) => agentFlock = flock;
-    public void Kill() => agentFlock.RemoveAgentFromList(this);
+    public void Kill() 
+    {
+        OnDestroy(this);
+        agentFlock.RemoveAgentFromList(this);
+    }
+
+    public Action<GridEntity> OnDestroy = delegate { };
     public void Move(Vector2 velocity)
     {
         transform.up = velocity;
@@ -19,7 +26,6 @@ public class FlockAgent : GridEntity
 
     public List<GridEntity> GetNearby()
     {
-        //humo
         if (agentFlock == null) return null;
         return agentFlock._spatialGrid.Query(
                 transform.position + new Vector3(-agentFlock.neighborRadius, -agentFlock.neighborRadius, 0),
