@@ -8802,6 +8802,41 @@ PrefabInstance:
       propertyPath: hunterWaypoints.Array.data[5]
       value: 
       objectReference: {fileID: 479152058}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 1612489452}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 813998607}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 1448121843}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 960402660}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.data[4]
+      value: 
+      objectReference: {fileID: 410588732}
+    - target: {fileID: 4806221785172887226, guid: ff04e8d9d21b752459f58bb9d0d42509,
+        type: 3}
+      propertyPath: ActiveHunterWaypoints.Array.data[5]
+      value: 
+      objectReference: {fileID: 479152058}
     - target: {fileID: 4806221785172887227, guid: ff04e8d9d21b752459f58bb9d0d42509,
         type: 3}
       propertyPath: m_Name
