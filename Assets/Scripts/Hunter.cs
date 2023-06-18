@@ -33,8 +33,10 @@ public class Hunter : GridEntity
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
     
-    public Hunter Initialize(Transform[] waypoints)
+    public Hunter Initialize(Transform[] waypoints, bool shouldShuffleWaypoint = false)
     {
+        if (shouldShuffleWaypoint) waypoints.Shuffle();
+        
         _waypoints = waypoints;
         
         InitializeFSMCoreStates();

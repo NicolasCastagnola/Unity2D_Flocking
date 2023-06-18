@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -29,11 +30,17 @@ public class GameManager : BaseMonoSingleton<GameManager>
         base.Awake();
 
         _mainCamera = Camera.main;
+
+        if (ActiveHunterWaypoints.Length == 0 || ActiveHunterWaypoints == null)
+        {
+            ActiveHunterWaypoints.AddRange(GetComponentsInChildren<Transform>());
+        }
+        
     }
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             SpawnHunter();
         }
@@ -70,13 +77,12 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
         _shouldSpawnFood = true;
     }
-
+    
     public void SpawnHunter()
     {
-        var shuffledWaypoint = ActiveHunterWaypoints;
-        shuffledWaypoint.Shuffle();
-        
-        var newHunter = Instantiate(hunterPrefab, ActiveHunterWaypoints.GetRandom().position, Quaternion.identity).GetComponent<Hunter>().Initialize(shuffledWaypoint);
+        var newHunter = Instantiate(hunterPrefab, ActiveHunterWaypoints.GetRandom().position, Quaternion.identity)
+                       .GetComponent<Hunter>()
+                       .Initialize(ActiveHunterWaypoints, true);
         
         activeHunter.Add(newHunter);
     }
