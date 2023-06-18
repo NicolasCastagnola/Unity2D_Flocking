@@ -121,6 +121,7 @@ public class Flock : MonoBehaviour
     }
     public void RemoveAgentFromList(FlockAgent agent)
     {
+        agent.gameObject.SetActive(false);
         GetTotalAgents.Remove(agent);
     }
     private void RemoveAllAgents()
