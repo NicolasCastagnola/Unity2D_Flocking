@@ -8,14 +8,19 @@ public class FlockAgent : GridEntity
     public Flock AgentFlock => agentFlock;
     public Collider2D AgentCollider { get; private set; }
     private void Start() => AgentCollider = GetComponent<Collider2D>();
-    public void Initialize(Flock flock) => agentFlock = flock;
+    public void Initialize(Flock flock)
+    {
+        grid = GetComponentInParent<SpatialGrid>();
+        agentFlock = flock;
+        //grid.AddEntity(this);
+    }
+    
     public void Kill() 
     {
-        OnDestroy(this);
+       // OnDestroy(this);
+       // OnDestroy -= grid.RemoveEntity;
         agentFlock.RemoveAgentFromList(this);
     }
-
-    public Action<GridEntity> OnDestroy = delegate { };
     public void Move(Vector2 velocity)
     {
         transform.up = velocity;
@@ -27,7 +32,7 @@ public class FlockAgent : GridEntity
     public List<GridEntity> GetNearby()
     {
         if (agentFlock == null) return null;
-        return agentFlock._spatialGrid.Query(
+        return grid.Query(
                 transform.position + new Vector3(-agentFlock.neighborRadius, -agentFlock.neighborRadius, 0),
                 transform.position + new Vector3(agentFlock.neighborRadius, agentFlock.neighborRadius, 0),
                 x => {

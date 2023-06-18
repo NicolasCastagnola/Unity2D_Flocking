@@ -53,29 +53,28 @@ public class SpatialGrid : MonoBehaviour
                 buckets[i, j] = new HashSet<GridEntity>();
             }
         }
-
         //P/alumnos: por que no usamos OfType<>() despues del RecursiveWalker() aca?
         var entities = RecursiveWalker(transform)
             .Select(entityTransform => entityTransform.GetComponent<GridEntity>())
             .Where(gridEntity => gridEntity != null);
 
-        /*foreach (var e in entities)
+        foreach (var e in entities)
         {
             e.OnMove += UpdateEntity;
             UpdateEntity(e);
-        }*/
+        }
     }
 
-    public void AddEntity(GridEntity ntt)
+    public void AddEntity(GridEntity e)
     {
-        ntt.OnMove += UpdateEntity;
-        UpdateEntity(ntt);
+        e.OnMove += UpdateEntity;
+        UpdateEntity(e);
     }
 
-    /*public void RemoveEntity(GridEntity ntt)
+    public void RemoveEntity(GridEntity ntt)
     {
         ntt.OnMove -= UpdateEntity;
-    }*/
+    }
 
     private void UpdateEntity(GridEntity entity)
     {
@@ -239,6 +238,7 @@ public class SpatialGrid : MonoBehaviour
             {
                 foreach(var ent in elem)
                 {
+                    if (ent == null) return;
                     int number = elem.Count();
                     
                     var numberStyle = new GUIStyle
