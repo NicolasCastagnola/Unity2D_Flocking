@@ -15,4 +15,6 @@ public class GridEntity : MonoBehaviour
 	//     // OnMove(this);
 	// }
     protected void MoveCallback() => OnMove?.Invoke(this);
+
+
 }

@@ -17,8 +17,8 @@ public class Queries : MonoBehaviour
     public Queries Initialize(SpatialGrid targetGrid)
     {
         _targetGrid = targetGrid;
-        width = _targetGrid.width;
-        height = _targetGrid.height;
+        //width = _targetGrid.width;
+        //height = _targetGrid.height;
         
         return this;
     }
@@ -42,8 +42,8 @@ public class Queries : MonoBehaviour
         {
             //creo una "caja" con las dimensiones deseadas, y luego filtro segun distancia para formar el círculo
             return _targetGrid.Query(
-                transform.position + new Vector3(-radius, -radius,0),
-                transform.position + new Vector3(radius,  radius,0),
+                transform.position + new Vector3(-radius, 0, -radius),
+                transform.position + new Vector3(radius,  0, radius),
                 x => {
                     var position2d = x - transform.position;
                     position2d.y = 0;
@@ -52,7 +52,7 @@ public class Queries : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
+    /*void OnDrawGizmos()
     {
         if (_targetGrid == null || !showGizmos) return;
              
@@ -80,6 +80,6 @@ public class Queries : MonoBehaviour
             }
 
         }
-    }
+    }*/
     private void OnGUI() => GUI.Label( new Rect(0,0,20,20), "HOLA");
 }

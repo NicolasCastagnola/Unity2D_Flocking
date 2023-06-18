@@ -7,12 +7,12 @@ public class Flock : MonoBehaviour
 {
     private const float AGENT_DENSITY = 0.08f;
 
-    [SerializeField] private SpatialGrid _spatialGrid;
     
     [SerializeField] private Composite weightController;
     public List<FlockAgent> GetTotalAgents { get; } = new List<FlockAgent>();
     public FlockAgent agentPrefab;
     public FlockBehaviour behavior;
+    public SpatialGrid _spatialGrid;
 
     [Range(10, 500)] public int startingCount = 150;
     [Range(1f, 100f)] public float driveFactor = 10f;
@@ -138,24 +138,19 @@ public class Flock : MonoBehaviour
         // cosas -> si esta vacio return o skip o si hay solo uno no entrar a un loop sino iterar al solo ese
         foreach (var agent in GetTotalAgents)
         {
-            var context = GetNearbyObjectsInsideSpatialGrid(agent);
+            var context = agent.GetNearby().Select(c => c.transform).ToList();
+            if(context != null)
+            {
+                var move = behavior.CalculateMove(agent, context, this);
             
-            var move = behavior.CalculateMove(agent, context, this);
+                move *= driveFactor;
             
-            move *= driveFactor;
-            
-            if (move.sqrMagnitude > squareMaxSpeed)
-                move = move.normalized * maxSpeed;
+                if (move.sqrMagnitude > squareMaxSpeed)
+                    move = move.normalized * maxSpeed;
 
-            agent.Move(move);
+                agent.Move(move);
+            }
         }
     }
 
-    //---------------IA2-P1------------------
-    private List<Transform> GetNearbyObjectsInsideSpatialGrid(FlockAgent agent)
-    {
-        var contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius);
-        
-        return contextColliders.Where(c => c != agent.AgentCollider).Select(c => c.transform).ToList();
-    }
 }
