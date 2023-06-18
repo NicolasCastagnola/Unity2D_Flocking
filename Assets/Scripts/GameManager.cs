@@ -14,7 +14,7 @@ public class GameManager : BaseMonoSingleton<GameManager>
     [TabGroup("UI")] public TextMeshProUGUI hunterEnergy;
     [TabGroup("UI")] public Button respawnHunterButton;
 
-    [TabGroup("Entities")] public Transform[] hunterWaypoints;
+    [TabGroup("Entities")] public Transform[] ActiveHunterWaypoints;
     [TabGroup("Entities")] public Flock flockManager;
     [ReadOnly, ShowInInspector] private List<Hunter> activeHunter = new List<Hunter>();
 
@@ -33,6 +33,11 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
     private void Update()
     {
+        if (Input.GetKey(KeyCode.A))
+        {
+            SpawnHunter();
+        }
+        
         agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count;
         //
         // // if (hunter != null)
@@ -68,7 +73,10 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
     public void SpawnHunter()
     {
-        var newHunter = Instantiate(hunterPrefab, transform).GetComponent<Hunter>().Initialize(hunterWaypoints);
+        var shuffledWaypoint = ActiveHunterWaypoints;
+        shuffledWaypoint.Shuffle();
+        
+        var newHunter = Instantiate(hunterPrefab, ActiveHunterWaypoints.GetRandom().position, Quaternion.identity).GetComponent<Hunter>().Initialize(shuffledWaypoint);
         
         activeHunter.Add(newHunter);
     }

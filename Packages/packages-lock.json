@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.nc.developertools": {
+      "version": "https://github.com/NicolasCastagnola/NC-Developer-Toolkit.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7619dfe5a55274976529ceef4ec8044b33463140"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
