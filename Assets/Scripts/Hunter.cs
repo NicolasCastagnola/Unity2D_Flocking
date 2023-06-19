@@ -4,6 +4,7 @@ using IA2;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 
 [Flags]
 public enum HunterStates { None, Rest, Pursuit, Patrol }
@@ -30,6 +31,7 @@ public class Hunter : GridEntity
     [TabGroup("Hunter Properties"), Range(0f,10f)] public float speed;
     [TabGroup("Hunter Properties"), Range(0f,10f)] public float recoveryTime = 5f;
     [TabGroup("Hunter Properties"), Range(0f,1f)] public float _totalEnergy = 1;
+    [TabGroup("Hunter Properties")] public TMP_Text stateName;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
     
@@ -37,13 +39,20 @@ public class Hunter : GridEntity
     {
         if (shouldShuffleWaypoint) waypoints.Shuffle();
         
+        GameManager.Instance.SpatialGrid.RegisterEntity(this);
+        
         _waypoints = waypoints;
         
         InitializeFSMCoreStates();
-
+        
         return this;
     }
-    private void OnDestroy() => _finiteStateMachine?.Terminate();
+    private void Terminate()
+    {
+        GameManager.Instance.SpatialGrid.RegisterEntity(this);
+        _finiteStateMachine?.Terminate();
+    }
+    private void OnDestroy() => Terminate();
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
     private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();
@@ -72,7 +81,10 @@ public class Hunter : GridEntity
                        .Done();
 
         _finiteStateMachine = new EventFSM<HunterStates>(Rest);
+        _finiteStateMachine.OnStateUpdated += StateUpdated;
+        
     }
+    private void StateUpdated(HunterStates incomingNewState) => stateName.text = incomingNewState.ToString();
 
     #region RestStateBehaviours
     private void RestStateEnter(HunterStates incomingStateInput)
@@ -105,7 +117,7 @@ public class Hunter : GridEntity
     }
     private void PursuitStateUpdate()
     {
-        MoveCallback();
+        UpdatePosition();
         
         if (energy >= 0)
         {
@@ -168,7 +180,7 @@ public class Hunter : GridEntity
         {
             SetPatrolBehaviour();
             
-            MoveCallback();
+            UpdatePosition();
             
             if (stateTimer <= 0)
             {
@@ -184,18 +196,27 @@ public class Hunter : GridEntity
   #endregion
     private void CheckProximity()
     {
-
         //---------------IA2-P1------------------
+        
+        var position = transform.position;
 
-        var proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
-        var bTarget = proximity.Select(x => x.GetComponent<FlockAgent>())
+        var context = GameManager.Instance.SpatialGrid.Query(
+            position + new Vector3(-proximityRadius, -proximityRadius, 0),
+            position + new Vector3(proximityRadius, proximityRadius, 0),
+            x => {
+                var position2d = x - transform.position;
+                position2d.z = 0;
+                return position2d.sqrMagnitude < proximityRadius * proximityRadius;
+            }).ToList();
+        
+        var closestTarget = context.Select(x => x.GetComponent<FlockAgent>())
                                .Where(x => x != null)
                                .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
                                .FirstOrDefault();
 
-        if(bTarget != null)
+        if(closestTarget != null)
         {
-            Target = bTarget.transform;
+            Target = closestTarget.transform;
             targetAcquiredFlag = true;
         }
         else

@@ -1,17 +1,18 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using UnityEngine;
 public class Food : GridEntity, IDestroyable
 {
-    public void Initialize()
+    public Food Initialize(float sizeMultiplier = 1)
     {
-        grid = FindObjectOfType<SpatialGrid>();
-        grid.AddEntity(this);
-        MoveCallback();
+        transform.localScale *= sizeMultiplier;
+        
+        GameManager.Instance.SpatialGrid.RegisterEntity(this);
+
+        return this;
     }
+    public void Update() => UpdatePosition();
     public void Destroy()
     {
-        OnDestroy(this);
-        //OnDestroy -= grid.RemoveEntity;
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

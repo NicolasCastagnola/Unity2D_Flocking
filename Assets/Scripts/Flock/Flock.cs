@@ -47,7 +47,7 @@ public class Flock : MonoBehaviour
 
     #region Stats
     public void SetSpeedValue() => maxSpeed = speedSlider.value;
-    public void SetAlingmentValue() => neighborRadius = alignmentSlider.value;
+    public void SetAlingmentValue() => neighborRadius = neighbourRadiusSlider.value;
     public void SetAvoidanceValue() => avoidanceRadiusMultiplier = avoidanceRadiusSlider.value;
     public void SetCohesionValue() => driveFactor = driveFactorSlider.value;
     public void SetQuantityValue() => startingCount = (int)quantitySlider.value;
@@ -138,6 +138,7 @@ public class Flock : MonoBehaviour
         foreach (var agent in GetTotalAgents)
         {
             var context = agent.GetNearby().Select(c => c.transform).ToList();
+            
             if(context != null)
             {
                 var move = behavior.CalculateMove(agent, context, this);
