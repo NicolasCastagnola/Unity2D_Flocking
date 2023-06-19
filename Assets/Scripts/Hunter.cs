@@ -47,13 +47,12 @@ public class Hunter : GridEntity
         
         return this;
     }
-    public void Terminate() => GameManager.Instance.SpatialGrid.RegisterEntity(this);
-    private void OnDestroy()
+    private void Terminate()
     {
+        GameManager.Instance.SpatialGrid.RegisterEntity(this);
         _finiteStateMachine?.Terminate();
-        
-        Terminate();
     }
+    private void OnDestroy() => Terminate();
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
     private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();
@@ -197,18 +196,27 @@ public class Hunter : GridEntity
   #endregion
     private void CheckProximity()
     {
-
         //---------------IA2-P1------------------
+        
+        var position = transform.position;
 
-        var proximity = Physics2D.OverlapCircleAll(transform.position, proximityRadius);
-        var bTarget = proximity.Select(x => x.GetComponent<FlockAgent>())
+        var context = GameManager.Instance.SpatialGrid.Query(
+            position + new Vector3(-proximityRadius, -proximityRadius, 0),
+            position + new Vector3(proximityRadius, proximityRadius, 0),
+            x => {
+                var position2d = x - transform.position;
+                position2d.z = 0;
+                return position2d.sqrMagnitude < proximityRadius * proximityRadius;
+            }).ToList();
+        
+        var closestTarget = context.Select(x => x.GetComponent<FlockAgent>())
                                .Where(x => x != null)
                                .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
                                .FirstOrDefault();
 
-        if(bTarget != null)
+        if(closestTarget != null)
         {
-            Target = bTarget.transform;
+            Target = closestTarget.transform;
             targetAcquiredFlag = true;
         }
         else

@@ -93,7 +93,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1181828863189890348}
-  - component: {fileID: 1181828863189890349}
   - component: {fileID: 1181828863189890347}
   - component: {fileID: 2878179298781509748}
   - component: {fileID: 5228384586806940456}
@@ -121,22 +120,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &1181828863189890349
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1181828863189890346}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.21
 --- !u!114 &1181828863189890347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,4 +269,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isBox: 0
   radius: 20
+  showGizmos: 0
   _targetGrid: {fileID: 0}

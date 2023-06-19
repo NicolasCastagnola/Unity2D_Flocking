@@ -3,8 +3,20 @@ using System.Linq;
 using UnityEngine;
 public class UserInterfaceManager : BaseMonoSingleton<UserInterfaceManager>
 {
-    [SerializeField] private List<UI_CollapsableContainer> _collapsableContainers;
+    private static readonly int Show = Animator.StringToHash("Show");
+    private static readonly int Hide = Animator.StringToHash("Hide");
+    private bool isVisible = true;
     
+    [SerializeField] private List<UI_CollapsableContainer> _collapsableContainers;
+    [SerializeField] private Animator _animator;
+
+    public void TriggerAnimator()
+    {
+        isVisible = !isVisible;
+        
+        _animator.Play(isVisible ? Hide : Show);
+    }
+
     public void CollapseContainer(UI_CollapsableContainer targetContainer)
     {
         if (_collapsableContainers.Count == 0) return;
