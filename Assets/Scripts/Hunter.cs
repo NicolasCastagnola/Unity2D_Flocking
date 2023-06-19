@@ -4,6 +4,7 @@ using IA2;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 
 [Flags]
 public enum HunterStates { None, Rest, Pursuit, Patrol }
@@ -30,6 +31,7 @@ public class Hunter : GridEntity
     [TabGroup("Hunter Properties"), Range(0f,10f)] public float speed;
     [TabGroup("Hunter Properties"), Range(0f,10f)] public float recoveryTime = 5f;
     [TabGroup("Hunter Properties"), Range(0f,1f)] public float _totalEnergy = 1;
+    [TabGroup("Hunter Properties")] public TMP_Text stateName;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
     
@@ -40,7 +42,7 @@ public class Hunter : GridEntity
         _waypoints = waypoints;
         
         InitializeFSMCoreStates();
-
+        
         return this;
     }
     private void OnDestroy() => _finiteStateMachine?.Terminate();
@@ -72,7 +74,10 @@ public class Hunter : GridEntity
                        .Done();
 
         _finiteStateMachine = new EventFSM<HunterStates>(Rest);
+        _finiteStateMachine.OnStateUpdated += StateUpdated;
+        
     }
+    private void StateUpdated(HunterStates incomingNewState) => stateName.text = incomingNewState.ToString();
 
     #region RestStateBehaviours
     private void RestStateEnter(HunterStates incomingStateInput)
@@ -105,7 +110,7 @@ public class Hunter : GridEntity
     }
     private void PursuitStateUpdate()
     {
-        MoveCallback();
+        UpdatePosition();
         
         if (energy >= 0)
         {
@@ -168,7 +173,7 @@ public class Hunter : GridEntity
         {
             SetPatrolBehaviour();
             
-            MoveCallback();
+            UpdatePosition();
             
             if (stateTimer <= 0)
             {

@@ -5,8 +5,6 @@ public class FlockAgent : GridEntity
 {
     [HideInInspector] public Flock agentFlock;
     public Flock AgentFlock => agentFlock;
-    // public Collider2D AgentCollider { get; private set; }
-    // private void Start() => AgentCollider = GetComponent<Collider2D>();
     public void Initialize(Flock flock) => agentFlock = flock;
     public void Kill() => agentFlock.RemoveAgentFromList(this);
     public void Move(Vector2 velocity)
@@ -16,11 +14,11 @@ public class FlockAgent : GridEntity
         agentTransform.up = velocity;
         agentTransform.position += (Vector3)velocity * Time.deltaTime;
 
-        MoveCallback();
+        UpdatePosition();
     }
     public IEnumerable<GridEntity> GetNearby()
     {
-        if (agentFlock == null) return null;
+        if (agentFlock == null) return default;
 
         var position = transform.position;
         

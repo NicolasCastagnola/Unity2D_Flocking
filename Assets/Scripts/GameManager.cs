@@ -10,6 +10,8 @@ public class GameManager : BaseMonoSingleton<GameManager>
 {
     private Camera _mainCamera;
     
+    [field:SerializeField] public SpatialGrid SpatialGrid { get; private set; }
+    
     [TabGroup("UI")] public TextMeshProUGUI agentsDisplay;
     [TabGroup("UI")] public TextMeshProUGUI hunterState;
     [TabGroup("UI")] public TextMeshProUGUI hunterEnergy;
@@ -99,6 +101,6 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
         var spawnPosition = new Vector2(spawnX, spawnY);
 
-        Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
+        Instantiate(foodPrefab, spawnPosition, Quaternion.identity, transform).GetComponent<Food>().Initialize(Random.Range(1f, 2f));
     }
 }

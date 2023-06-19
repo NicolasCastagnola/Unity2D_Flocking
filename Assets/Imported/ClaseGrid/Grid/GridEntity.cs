@@ -4,17 +4,8 @@ using UnityEngine;
 
 public class GridEntity : MonoBehaviour
 {
-	public event Action<GridEntity> OnMove;
+	public event Action<GridEntity> OnUpdatePosition;
     [BoxGroup("GridEntity")] public bool isOnGrid;
- //    private Renderer _renderer;
- //    private void Awake() => _renderer = GetComponent<Renderer>();
- //    public void Update() 
- //    {
- //        // _renderer.material.color = onGrid ? Color.red : Color.gray;
-	// 	//Optimization: Hacer esto solo cuando realmente se mueve y no en el update
-	//     // OnMove(this);
-	// }
-    protected void MoveCallback() => OnMove?.Invoke(this);
-
+    protected void UpdatePosition() => OnUpdatePosition?.Invoke(this);
 
 }

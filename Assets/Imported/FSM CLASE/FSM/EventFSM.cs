@@ -3,7 +3,9 @@ using System;
 namespace IA2
 {
 	public class EventFSM<T>
-    {
+	{
+		public event Action<T> OnStateUpdated;
+
 		public State<T> Current { get { return current; } }
 		
 		private State<T> current;
@@ -17,31 +19,18 @@ namespace IA2
 		public void Terminate(){}
 
 		public void SendInput(T input)
-        {
-			State<T> newState;
-
-			if (current.CheckInput(input, out newState))
-            {
-				current.Exit(input);
-				current = newState;
-				current.Enter(input);
-			}
+		{
+			if (!current.CheckInput(input, out var newState)) return;
+				
+			current.Exit(input);
+			current = newState;
+			current.Enter(input);
+			
+			OnStateUpdated?.Invoke(input);
 		}
 
-
-		public void Update()
-        {
-			current.Update();
-		}
-
-        public void LateUpdate()
-        {
-            current.LateUpdate();
-        }
-
-        public void FixedUpdate()
-        {
-            current.FixedUpdate();
-        }
-	}
+		public void Update() => current.Update();
+		public void LateUpdate() => current.LateUpdate();
+		public void FixedUpdate() => current.FixedUpdate();
+    }
 }

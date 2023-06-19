@@ -61,19 +61,39 @@ public class SpatialGrid : MonoBehaviour
 
         foreach (var e in entities)
         {
-            e.OnMove += UpdateEntity;
-            UpdateEntity(e);
+            RegisterEntity(e);
         }
     }
 
+    public void Terminate()
+    {
+        var ents = RecursiveWalker(transform).Select(x => x.GetComponent<GridEntity>()).Where(x => x != null);
+        
+        foreach (var e in ents)
+        {
+            UnRegisterEntity(e);
+        }
+    }
+
+    private void OnDestroy() => Terminate();
+    public void RegisterEntity(GridEntity gridEntity)
+    {
+        gridEntity.OnUpdatePosition += UpdateEntity;
+        
+        UpdateEntity(gridEntity);
+    }
+    
+    public void UnRegisterEntity(GridEntity gridEntity)
+    {
+        gridEntity.OnUpdatePosition -= UpdateEntity;
+    }
     private void UpdateEntity(GridEntity entity)
     {
         var lastPos = lastPositions.TryGetValue(entity, out var position) ? position : Outside;
         var currentPos = GetPositionInGrid(entity.gameObject.transform.position);
 
         //Misma posición, no necesito hacer nada
-        if (lastPos.Equals(currentPos))
-            return;
+        if (lastPos.Equals(currentPos)) return;
 
         //Lo "sacamos" de la posición anterior
         if (IsInsideGrid(lastPos))
@@ -120,10 +140,11 @@ public class SpatialGrid : MonoBehaviour
         // Iteramos las que queden dentro del criterio
         return cells
             .SelectMany(cell => buckets[cell.Item1, cell.Item2])
-            .Where(e =>
-                from.x <= e.transform.position.x && e.transform.position.x <= to.x &&
-                from.y <= e.transform.position.y && e.transform.position.y <= to.y
-            ).Where(x => filterByPosition(x.transform.position));
+               
+            .Where(e => from.x <= e.transform.position.x && e.transform.position.x <= to.x &&
+                                from.y <= e.transform.position.y && e.transform.position.y <= to.y
+                
+            ).Where(x => filterByPosition(x.transform.position) && x.gameObject.activeSelf);
     }
 
     public Tuple<int, int> GetPositionInGrid(Vector3 pos)
@@ -140,12 +161,7 @@ public class SpatialGrid : MonoBehaviour
             0 <= position.Item2 && position.Item2 < height;
     }
 
-    void OnDestroy()
-    {
-        var ents = RecursiveWalker(transform).Select(x => x.GetComponent<GridEntity>()).Where(x => x != null);
-        foreach (var e in ents)
-            e.OnMove -= UpdateEntity;
-    }
+
 
     #region GENERATORS
     private static IEnumerable<Transform> RecursiveWalker(Transform parent)
