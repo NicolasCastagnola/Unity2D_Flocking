@@ -39,13 +39,21 @@ public class Hunter : GridEntity
     {
         if (shouldShuffleWaypoint) waypoints.Shuffle();
         
+        GameManager.Instance.SpatialGrid.RegisterEntity(this);
+        
         _waypoints = waypoints;
         
         InitializeFSMCoreStates();
         
         return this;
     }
-    private void OnDestroy() => _finiteStateMachine?.Terminate();
+    public void Terminate() => GameManager.Instance.SpatialGrid.RegisterEntity(this);
+    private void OnDestroy()
+    {
+        _finiteStateMachine?.Terminate();
+        
+        Terminate();
+    }
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
     private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();

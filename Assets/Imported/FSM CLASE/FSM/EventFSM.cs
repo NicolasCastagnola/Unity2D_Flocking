@@ -17,7 +17,6 @@ namespace IA2
 		}
 		
 		public void Terminate(){}
-
 		public void SendInput(T input)
 		{
 			if (!current.CheckInput(input, out var newState)) return;
