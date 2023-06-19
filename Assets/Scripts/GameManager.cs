@@ -47,7 +47,7 @@ public class GameManager : BaseMonoSingleton<GameManager>
             SpawnHunter();
         }
         
-        agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count;
+        // agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count;
         //
         // // if (hunter != null)
         // {

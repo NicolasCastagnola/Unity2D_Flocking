@@ -47,7 +47,7 @@ public class Flock : MonoBehaviour
 
     #region Stats
     public void SetSpeedValue() => maxSpeed = speedSlider.value;
-    public void SetAlingmentValue() => neighborRadius = alignmentSlider.value;
+    public void SetAlingmentValue() => neighborRadius = neighbourRadiusSlider.value;
     public void SetAvoidanceValue() => avoidanceRadiusMultiplier = avoidanceRadiusSlider.value;
     public void SetCohesionValue() => driveFactor = driveFactorSlider.value;
     public void SetQuantityValue() => startingCount = (int)quantitySlider.value;
