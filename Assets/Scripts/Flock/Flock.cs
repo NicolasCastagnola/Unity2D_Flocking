@@ -12,7 +12,7 @@ public class Flock : MonoBehaviour
     public List<FlockAgent> GetTotalAgents { get; } = new List<FlockAgent>();
     public FlockAgent agentPrefab;
     public FlockBehaviour behavior;
-    public SpatialGrid _spatialGrid;
+    public SpatialGrid SpatialGrid;
 
     [Range(10, 500)] public int startingCount = 150;
     [Range(1f, 100f)] public float driveFactor = 10f;
@@ -93,7 +93,8 @@ public class Flock : MonoBehaviour
 
         Spawn((int)quantitySlider.value);
         
-        _spatialGrid.Initialize();
+        //IA2-P2
+        SpatialGrid.Initialize();
     }
     public void ResetAgents()
     {
@@ -112,7 +113,7 @@ public class Flock : MonoBehaviour
                 transform
             );
             
-            newAgent.GetComponent<Queries>().Initialize(_spatialGrid);
+            newAgent.GetComponent<Queries>().Initialize(SpatialGrid);
             newAgent.name = "Agent " + i;
             newAgent.Initialize(this);
             
@@ -122,6 +123,7 @@ public class Flock : MonoBehaviour
     public void RemoveAgentFromList(FlockAgent agent)
     {
         agent.gameObject.SetActive(false);
+        agent.Terminate();
         GetTotalAgents.Remove(agent);
     }
     private void RemoveAllAgents()
@@ -135,21 +137,17 @@ public class Flock : MonoBehaviour
     }
     private void Update()
     {
-        //Encargar cada cuadrante de hacer esto
-        // cosas -> si esta vacio return o skip o si hay solo uno no entrar a un loop sino iterar al solo ese
         foreach (var agent in GetTotalAgents)
         {
+            //IA2-P2
             var context = agent.GetNearby().Select(c => c.transform).ToList();
-            
-            if(context != null)
             {
                 var move = behavior.CalculateMove(agent, context, this);
             
                 move *= driveFactor;
             
-                if (move.sqrMagnitude > squareMaxSpeed)
-                    move = move.normalized * maxSpeed;
-
+                if (move.sqrMagnitude > squareMaxSpeed) move = move.normalized * maxSpeed;
+                    
                 agent.Move(move);
             }
         }

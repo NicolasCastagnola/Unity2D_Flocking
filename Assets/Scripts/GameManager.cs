@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -19,7 +20,9 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
     [TabGroup("Entities")] public Transform[] ActiveHunterWaypoints;
     [TabGroup("Entities")] public Flock flockManager;
+    
     [ReadOnly, ShowInInspector] private List<Hunter> activeHunter = new List<Hunter>();
+    [ReadOnly, ShowInInspector] private List<Food> activeFood = new List<Food>();
 
     [TabGroup("Prefabs")] public GameObject hunterPrefab;
     [TabGroup("Prefabs")] public GameObject foodPrefab;
@@ -37,8 +40,9 @@ public class GameManager : BaseMonoSingleton<GameManager>
         {
             ActiveHunterWaypoints.AddRange(GetComponentsInChildren<Transform>());
         }
-        
     }
+    
+    
 
     private void Update()
     {
@@ -47,21 +51,6 @@ public class GameManager : BaseMonoSingleton<GameManager>
             SpawnHunter();
         }
         
-        // agentsDisplay.text = "A_COUNT: " + flockManager.GetTotalAgents.Count;
-        //
-        // // if (hunter != null)
-        // {
-        //     hunterState.text = "H_STATE: " + hunter.CurrentStateDisplay;   
-        //     respawnHunterButton.gameObject.SetActive(false);
-        // }
-        // else
-        // {
-        //     hunterState.text = "H_STATE: DIE DUE STARVATION";
-        //     respawnHunterButton.gameObject.SetActive(true);
-        // }
-        //         
-        // hunterEnergy.text = "H_ENERGY: " + hunter.energy.ToString("0.00");
-
         if (_shouldSpawnFood)
         {
             StartCoroutine(SpawnFoodTimer());
@@ -79,28 +68,29 @@ public class GameManager : BaseMonoSingleton<GameManager>
 
         _shouldSpawnFood = true;
     }
-    
-    public void SpawnHunter()
+
+    [Button]
+    private void SpawnHunter()
     {
-        var newHunter = Instantiate(hunterPrefab, ActiveHunterWaypoints.GetRandom().position, Quaternion.identity)
+        var newHunter = Instantiate(hunterPrefab, ActiveHunterWaypoints[0].position, Quaternion.identity)
                        .GetComponent<Hunter>()
-                       .Initialize(ActiveHunterWaypoints, true);
+                       .Initialize(ActiveHunterWaypoints);
         
         activeHunter.Add(newHunter);
     }
+    [Button]
     private void SpawnFoodInsideScreenBounds()
     {
-        float spawnY = Random.Range(
-            _mainCamera.ScreenToWorldPoint(new Vector2(0, 0)).y, 
-            _mainCamera.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+        float spawnY = Random.Range(_mainCamera.ScreenToWorldPoint(new Vector2(0, 0)).y, 
+                                    _mainCamera.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
     
-        float spawnX = Random.Range(
-            _mainCamera.ScreenToWorldPoint(new Vector2(0, 0)).x, 
-            _mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
-            
+        float spawnX = Random.Range(_mainCamera.ScreenToWorldPoint(new Vector2(0, 0)).x, 
+                                    _mainCamera.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
 
-        var spawnPosition = new Vector2(spawnX, spawnY);
-
-        Instantiate(foodPrefab, spawnPosition, Quaternion.identity, transform).GetComponent<Food>().Initialize(Random.Range(1f, 2f));
+        var newFood = Instantiate(foodPrefab, new Vector2(spawnX, spawnY), Quaternion.identity, transform)
+           .GetComponent<Food>()
+           .Initialize(Random.Range(1f, 2f));
+        
+        activeFood.Add(newFood);
     }
 }

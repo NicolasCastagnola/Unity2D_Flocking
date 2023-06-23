@@ -29,10 +29,7 @@ public class Arrive : FilteredFlockBehaviour
                     {
                         var d = food.GetComponent<IDestroyable>();
 
-                        if (d != null)
-                        {
-                            d.Destroy();
-                        }
+                        d?.Destroy();
                     }
                 }
             }

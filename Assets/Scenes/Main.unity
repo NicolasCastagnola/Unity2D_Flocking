@@ -298,8 +298,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 150}
-  m_SizeDelta: {x: 0, y: -500}
+  m_AnchoredPosition: {x: 0, y: 117.5}
+  m_SizeDelta: {x: 0, y: -435}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &51145994
 MonoBehaviour:
@@ -1967,8 +1967,8 @@ MonoBehaviour:
   agentPrefab: {fileID: 1181828863189890347, guid: ca511f68d0b5605428cbc6ce572f0b4d,
     type: 3}
   behavior: {fileID: 11400000, guid: 76d94751622c3ca43bb99fc361d9e792, type: 2}
-  _spatialGrid: {fileID: 500166197}
-  startingCount: 150
+  SpatialGrid: {fileID: 500166197}
+  startingCount: 10
   driveFactor: 10
   maxSpeed: 5
   neighborRadius: 1
@@ -5539,8 +5539,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 150}
-  m_SizeDelta: {x: 0, y: -500}
+  m_AnchoredPosition: {x: 0, y: 117.5}
+  m_SizeDelta: {x: 0, y: -435}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1205418750
 MonoBehaviour:
@@ -5930,8 +5930,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 150}
-  m_SizeDelta: {x: 0, y: -500}
+  m_AnchoredPosition: {x: 0, y: 117.5}
+  m_SizeDelta: {x: 0, y: -435}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1235129294
 MonoBehaviour:

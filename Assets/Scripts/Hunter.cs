@@ -7,12 +7,21 @@ using System.Linq;
 using TMPro;
 
 [Flags]
-public enum HunterStates { None, Rest, Pursuit, Patrol }
+public enum HunterStates : byte
+{
+    None = 0, 
+    Rest = 1, 
+    Pursuit = 2, 
+    Patrol = 3,
+    Die = 4
+}
 
 //IA2-P3
 public class Hunter : GridEntity
 {
-    private Transform Target { get; set; }
+    private Transform Target;
+    
+    private bool _isRecovering;
     [ShowInInspector, ReadOnly, TabGroup("States")] public string CurrentStateDisplay => _finiteStateMachine?.Current.Name;
     [ShowInInspector, ReadOnly, TabGroup("States")] private EventFSM<HunterStates> _finiteStateMachine;
     
@@ -20,7 +29,7 @@ public class Hunter : GridEntity
     [SerializeField, TabGroup("States")] private float energyDrainTicks = 0.1f;
     [SerializeField, TabGroup("States")] private float interpolationPeriod = 2f;
     
-    [ShowInInspector, ReadOnly, Header("Patrol Properties"), TabGroup("States")] private float stateTimer = 10f;
+    [ShowInInspector, ReadOnly, Header("Patrol Properties"), TabGroup("States")] private float patrolCurrentTime = 10f;
 
     [TabGroup("Waypoints Properties"), ShowInInspector, ReadOnly] private Transform[] _waypoints;
     [ShowInInspector, ReadOnly, TabGroup("Waypoints Properties")] private int waypointIndex;
@@ -47,12 +56,18 @@ public class Hunter : GridEntity
         
         return this;
     }
+    private void OnDestroy()
+    {
+        Terminate();
+    }
+
     private void Terminate()
     {
-        GameManager.Instance.SpatialGrid.RegisterEntity(this);
+        _finiteStateMachine.OnStateUpdated -= StateUpdated;
         _finiteStateMachine?.Terminate();
+        
+        GameManager.Instance.SpatialGrid.UnRegisterEntity(this);
     }
-    private void OnDestroy() => Terminate();
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
     private void FixedUpdate() => _finiteStateMachine?.FixedUpdate();
@@ -61,6 +76,7 @@ public class Hunter : GridEntity
         var Rest = new State<HunterStates>("Rest");
         var Pursuit = new State<HunterStates>("Pursuit");
         var Patrol = new State<HunterStates>("Patrol");
+        var Die = new State<HunterStates>("Die");
         
         StateConfigurer.Create(Rest)
                        .SetTransition(HunterStates.Patrol, Patrol)
@@ -71,7 +87,7 @@ public class Hunter : GridEntity
         StateConfigurer.Create(Pursuit)
                        .SetTransition(HunterStates.Rest, Rest)
                        .SetTransition(HunterStates.Patrol, Patrol)
-                       .SetCallbacks(PursuitStateEnter, PursuitStateUpdate)
+                       .SetCallbacks(PursuitStateEnter, PursuitStateUpdate,null,null, PursuitStateExit)
                        .Done();
                         
         StateConfigurer.Create(Patrol)
@@ -79,11 +95,16 @@ public class Hunter : GridEntity
                        .SetTransition(HunterStates.Pursuit, Pursuit)
                        .SetCallbacks(PatrolStateEnter, PatrolStateUpdate, null, null, PatrolStateExit)
                        .Done();
+        
+        StateConfigurer.Create(Die)
+                       .SetCallbacks(DieStateEnter)
+                       .Done();
 
-        _finiteStateMachine = new EventFSM<HunterStates>(Rest);
+        _finiteStateMachine = new EventFSM<HunterStates>(Patrol);
         _finiteStateMachine.OnStateUpdated += StateUpdated;
         
     }
+    private void DieStateEnter(HunterStates obj) => Terminate();
     private void StateUpdated(HunterStates incomingNewState) => stateName.text = incomingNewState.ToString();
 
     #region RestStateBehaviours
@@ -93,33 +114,39 @@ public class Hunter : GridEntity
     }
     private void RestStateUpdate()
     {
-        if (energy >= 1)
-            _finiteStateMachine.SendInput(HunterStates.Patrol);
+        UpdatePosition();
+        
+        if (energy > 1) _finiteStateMachine.SendInput(HunterStates.Patrol);
 
-        if (energy <= 0f)
+        if (energy <= 0f && !_isRecovering)
         {
             speed = 0;
             _spriteRenderer.color = Color.green;
             StartCoroutine(TriggerRecovery());
         }
-        else speed = 5.2f;
+
     }
-    private void RestStateOnExit(HunterStates incomingStateInput) => energy = 1;
+    private void RestStateOnExit(HunterStates incomingStateInput)
+    { 
+    }
     #endregion
 
     #region PursuitStateBehaviours
 
     private void PursuitStateEnter(HunterStates incomingStateInput)
     {
-        energyDrainTicks = 0.1f;
-        interpolationPeriod = 2f;
-        time = 0f;
     }
     private void PursuitStateUpdate()
     {
         UpdatePosition();
+
+        if (energy == 0)
+        {
+            _finiteStateMachine.SendInput(HunterStates.Rest);
+            return;
+        }
         
-        if (energy >= 0)
+        if (energy > 0)
         {
             time += Time.deltaTime;
 
@@ -127,6 +154,7 @@ public class Hunter : GridEntity
             {
                 time -= interpolationPeriod;
                 energy -= energyDrainTicks;
+                time = 0;
             }
 
             if (Target)
@@ -143,38 +171,40 @@ public class Hunter : GridEntity
             }
 
             _spriteRenderer.color = Color.red;
-        
-            if (!targetAcquiredFlag)
-            {
-                CheckProximity();
-            }
-            else
-            {
-                Pursuit(CalculateTrajectory(Target));
-            }
-        }
-        else
-        {
-            _finiteStateMachine.SendInput(HunterStates.Rest);
+            
+            if (!targetAcquiredFlag) CheckProximity();
+            
+            else Pursuit(CalculateTrajectory(Target));
+     
         }
     }
-
-
+    private void PursuitStateExit(HunterStates obj)
+    {
+        
+    }
     #endregion
+    [Button]
+    public void SetStateMachineNewState(HunterStates hunterStates) => _finiteStateMachine?.SendInput(hunterStates);
 
     #region PatrolStateBehaviours
 
-    private void PatrolStateEnter(HunterStates incomingStateInput) => stateTimer = 10f;
+    private void PatrolStateEnter(HunterStates incomingStateInput)
+    {
+        if (energy <= 0)
+        {
+            _finiteStateMachine.SendInput(HunterStates.Rest);
+            return;
+        }
+        
+        patrolCurrentTime = 10f;
+    }
     private void PatrolStateExit(HunterStates incomingStateInput)
     {
-        if (energy > 0.2)
-        {
-            energy -= 0.2f; 
-        }
+        if (energy > 0.2) energy -= 0.2f; 
     }
     private void PatrolStateUpdate()
     {
-        stateTimer -= Time.deltaTime;
+        patrolCurrentTime -= Time.deltaTime;
        
         if (energy >= 0)
         {
@@ -182,7 +212,7 @@ public class Hunter : GridEntity
             
             UpdatePosition();
             
-            if (stateTimer <= 0)
+            if (patrolCurrentTime <= 0)
             {
                 _finiteStateMachine.SendInput(HunterStates.Pursuit);
             }
@@ -203,12 +233,14 @@ public class Hunter : GridEntity
         var context = GameManager.Instance.SpatialGrid.Query(
             position + new Vector3(-proximityRadius, -proximityRadius, 0),
             position + new Vector3(proximityRadius, proximityRadius, 0),
-            x => {
+            x =>
+            {
                 var position2d = x - transform.position;
                 position2d.z = 0;
                 return position2d.sqrMagnitude < proximityRadius * proximityRadius;
             }).ToList();
-        
+
+
         var closestTarget = context.Select(x => x.GetComponent<FlockAgent>())
                                .Where(x => x != null)
                                .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
@@ -239,6 +271,7 @@ public class Hunter : GridEntity
         var desired = target.position - transform.position;
         desired.Normalize();
         desired *= speed;
+        desired.z = 0;
         
         return desired;
     }
@@ -248,10 +281,7 @@ public class Hunter : GridEntity
         {
             waypointIndex++;
 
-            if (waypointIndex > _waypoints.Length - 1)
-            {
-                waypointIndex = 0;
-            }
+            if (waypointIndex > _waypoints.Length - 1) waypointIndex = 0;
         }
         else
         {
@@ -261,6 +291,7 @@ public class Hunter : GridEntity
             direction.Normalize();
             transform.up = direction;
             position += direction * (speed * Time.deltaTime);
+            position.z = 0;
             transform.position = position;
             _spriteRenderer.color = Color.yellow;
             targetAcquiredFlag = false;
@@ -268,8 +299,13 @@ public class Hunter : GridEntity
     }
     private IEnumerator TriggerRecovery()
     {
+        _isRecovering = true;
+        
         yield return new WaitForSeconds(recoveryTime);
+        
+        _isRecovering = false;
 
         energy = _totalEnergy;
+        speed = 5.2f;
     }
 }

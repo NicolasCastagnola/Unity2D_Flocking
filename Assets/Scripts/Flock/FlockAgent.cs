@@ -16,13 +16,14 @@ public class FlockAgent : GridEntity
 
         UpdatePosition();
     }
+    //IA2-P2
     public IEnumerable<GridEntity> GetNearby()
     {
         if (agentFlock == null) return default;
 
         var position = transform.position;
         
-        return agentFlock._spatialGrid.Query(
+        return agentFlock.SpatialGrid.Query(
                 position + new Vector3(-agentFlock.neighborRadius, -agentFlock.neighborRadius, 0),
                 position + new Vector3(agentFlock.neighborRadius, agentFlock.neighborRadius, 0),
                 x => {
@@ -32,4 +33,7 @@ public class FlockAgent : GridEntity
                 }).ToList();
     }
 
+    public void Terminate()
+    {
+    }
 }
