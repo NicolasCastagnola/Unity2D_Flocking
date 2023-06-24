@@ -6,15 +6,15 @@ using System.Collections.Generic;
 public class Flock : MonoBehaviour
 {
     private const float AGENT_DENSITY = 0.08f;
+    private const int STARTING_VALUE = 100;
 
-    
     [SerializeField] private Composite weightController;
     public List<FlockAgent> GetTotalAgents { get; } = new List<FlockAgent>();
     public FlockAgent agentPrefab;
     public FlockBehaviour behavior;
     public SpatialGrid SpatialGrid;
 
-    [Range(10, 500)] public int startingCount = 150;
+    [Range(10, 500)] public int currentCount = 150;
     [Range(1f, 100f)] public float driveFactor = 10f;
     [Range(5f, 100f)] public float maxSpeed = 5f;
     [Range(1f, 2f)] public float neighborRadius = 1.5f;
@@ -33,11 +33,16 @@ public class Flock : MonoBehaviour
     }
 
 
+    public void SpawnBoids(int amount)
+    {
+        
+    }
+    
     #region Slider Setters
 
     #region UI
 
-    [SerializeField] Slider quantitySlider;
+
     [SerializeField] Slider speedSlider;
     [SerializeField] Slider neighbourRadiusSlider;
     [SerializeField] Slider avoidanceRadiusSlider;
@@ -50,7 +55,6 @@ public class Flock : MonoBehaviour
     public void SetAlingmentValue() => neighborRadius = neighbourRadiusSlider.value;
     public void SetAvoidanceValue() => avoidanceRadiusMultiplier = avoidanceRadiusSlider.value;
     public void SetCohesionValue() => driveFactor = driveFactorSlider.value;
-    public void SetQuantityValue() => startingCount = (int)quantitySlider.value;
 
     #endregion
 
@@ -90,8 +94,8 @@ public class Flock : MonoBehaviour
         squareNeighborRadius = neighborRadius * neighborRadius;
         SquareAvoidanceRadius = squareNeighborRadius * avoidanceRadiusMultiplier * avoidanceRadiusMultiplier;
         SquareSeekRadius = Mathf.Pow(seekRadiusMultiplier, 2);
-
-        Spawn((int)quantitySlider.value);
+        
+        Spawn(STARTING_VALUE);
         
         //IA2-P2
         SpatialGrid.Initialize();
@@ -99,7 +103,7 @@ public class Flock : MonoBehaviour
     public void ResetAgents()
     {
         RemoveAllAgents();
-        Spawn((int)quantitySlider.value);
+        Spawn((STARTING_VALUE));
         GameManager.Instance.agentsDisplay.text = GetTotalAgents.Count.ToString();
     }
     private void Spawn(int quantity)
@@ -128,7 +132,7 @@ public class Flock : MonoBehaviour
     }
     private void RemoveAllAgents()
     {
-        for (int i = startingCount - 1; i > 0; i--)
+        for (int i = STARTING_VALUE - 1; i > 0; i--)
         {
             GetTotalAgents[i].Kill();
         }

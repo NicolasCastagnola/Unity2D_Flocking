@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector;
-using Sirenix.Utilities;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using Sirenix.Utilities;
+using System.Collections;
+using Sirenix.OdinInspector;
+using System.Collections.Generic;
 
 public class GameManager : BaseMonoSingleton<GameManager>
 {
     private Camera _mainCamera;
-    
     [field:SerializeField] public SpatialGrid SpatialGrid { get; private set; }
     
     [TabGroup("UI")] public TextMeshProUGUI agentsDisplay;
@@ -37,27 +35,14 @@ public class GameManager : BaseMonoSingleton<GameManager>
         _mainCamera = Camera.main;
 
         if (ActiveHunterWaypoints.Length == 0 || ActiveHunterWaypoints == null)
-        {
             ActiveHunterWaypoints.AddRange(GetComponentsInChildren<Transform>());
-        }
     }
-    
-    
-
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            SpawnHunter();
-        }
+        if (Input.GetKeyDown(KeyCode.A)) SpawnHunter();
         
-        if (_shouldSpawnFood)
-        {
-            StartCoroutine(SpawnFoodTimer());
-        }
+        if (_shouldSpawnFood) StartCoroutine(SpawnFoodTimer());
     }
-
-
     private IEnumerator SpawnFoodTimer()
     {
         _shouldSpawnFood = false;
