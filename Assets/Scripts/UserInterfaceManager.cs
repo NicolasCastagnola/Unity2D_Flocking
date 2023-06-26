@@ -16,8 +16,23 @@ public class UserInterfaceManager : BaseMonoSingleton<UserInterfaceManager>
     private bool _isVisible = true;
     private bool _canInteract = true;
     
-    [SerializeField, TabGroup("Sliders")] private Slider fovSlider;
-    [SerializeField, TabGroup("Sliders")] private TMP_Text fovValue;
+    [SerializeField, TabGroup("Slider Configurations")] private Slider fovSlider;
+    [SerializeField, TabGroup("Sliders Values")] private TMP_Text fovValue;
+    
+    [SerializeField, TabGroup("Slider Configurations")] private Slider speedSlider;
+    [SerializeField, TabGroup("Sliders Values")] private TMP_Text speedValue;
+    
+    [SerializeField, TabGroup("Slider Configurations")] private Slider neighborsRadiusSlider;
+    [SerializeField, TabGroup("Sliders Values")] private TMP_Text neighborsRadiusValue;
+    
+    [SerializeField, TabGroup("Slider Configurations")] private Slider seekRadiusSlider;
+    [SerializeField, TabGroup("Sliders Values")] private TMP_Text seekRadiusValue;
+        
+    [SerializeField, TabGroup("Slider Configurations")] private Slider avoidanceRadiusSlider;
+    [SerializeField, TabGroup("Sliders Values")] private TMP_Text avoidanceRadiusValue;
+    
+    [SerializeField, TabGroup("Slider Configurations")] private Slider driveFactorSlider;
+    [SerializeField, TabGroup("Sliders Values")] private TMP_Text driveFactorValue;
     
     [SerializeField] private List<AnimatedContainer> _collapsableContainers;
     [SerializeField] private Animator _animator;
@@ -30,16 +45,52 @@ public class UserInterfaceManager : BaseMonoSingleton<UserInterfaceManager>
         base.Awake();
 
         mainCamera = Camera.main;
+        
         fovSlider.onValueChanged.AddListener(UpdateQuantityValue);
+        speedSlider.onValueChanged.AddListener(UpdateBoidsSpeed);
+        neighborsRadiusSlider.onValueChanged.AddListener(UpdateNeighborsRadius);
+        seekRadiusSlider.onValueChanged.AddListener(UpdateSeekRadius);
+        avoidanceRadiusSlider.onValueChanged.AddListener(UpdateAvoidanceRadius);
+        driveFactorSlider.onValueChanged.AddListener(UpdateDriveFactorRadius);
     }
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        
+        neighborsRadiusSlider.onValueChanged.RemoveListener(UpdateNeighborsRadius);
+        speedSlider.onValueChanged.RemoveListener(UpdateBoidsSpeed);
         fovSlider.onValueChanged.RemoveListener(UpdateQuantityValue);
+        seekRadiusSlider.onValueChanged.RemoveListener(UpdateSeekRadius);
+        avoidanceRadiusSlider.onValueChanged.RemoveListener(UpdateAvoidanceRadius);
+    }
+    private void UpdateDriveFactorRadius(float value)
+    {
+        driveFactorValue.text = value.ToString("0.0");
+        flockManager.driveFactor = value;
+    }
+    private void UpdateAvoidanceRadius(float value)
+    {
+        avoidanceRadiusValue.text = value.ToString("0.0");
+        flockManager.avoidanceRadiusMultiplier = value;
+    }
+    private void UpdateSeekRadius(float value)
+    {
+        seekRadiusValue.text = value.ToString("0.0");
+        flockManager.seekRadiusMultiplier = value;
+    }
+    private void UpdateNeighborsRadius(float value)
+    {
+        neighborsRadiusValue.text = value.ToString("0.0");
+        flockManager.neighborRadius = value;
+    }
+    private void UpdateBoidsSpeed(float value)
+    {
+        speedValue.text = value.ToString("0.0");
+        flockManager.maxSpeed = value;
     }
     private void UpdateQuantityValue(float value)
     {
-        fovValue.text = value.ToString(CultureInfo.InvariantCulture);
+        fovValue.text = value.ToString("0.0");
         mainCamera.orthographicSize = value;
     }
     public void TriggerAnimator()

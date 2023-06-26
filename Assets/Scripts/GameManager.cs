@@ -43,6 +43,8 @@ public class GameManager : BaseMonoSingleton<GameManager>
         
         if (_shouldSpawnFood) StartCoroutine(SpawnFoodTimer());
     }
+
+    public void ShuffleWaypoints() => ActiveHunterWaypoints.Shuffle();
     private IEnumerator SpawnFoodTimer()
     {
         _shouldSpawnFood = false;

@@ -44,10 +44,8 @@ public class Hunter : GridEntity
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] public float energy;
     [ShowInInspector, ReadOnly, TabGroup("Hunter Properties")] private bool targetAcquiredFlag;
     
-    public Hunter Initialize(Transform[] waypoints, bool shouldShuffleWaypoint = false)
+    public Hunter Initialize(Transform[] waypoints)
     {
-        if (shouldShuffleWaypoint) waypoints.Shuffle();
-        
         GameManager.Instance.SpatialGrid.RegisterEntity(this);
         
         _waypoints = waypoints;

@@ -954,7 +954,7 @@ GameObject:
   - component: {fileID: 114551472}
   - component: {fileID: 114551473}
   m_Layer: 5
-  m_Name: Neightbour Radius Slider
+  m_Name: Neightbors Radius Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1546,10 +1546,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 512563391}
   m_HandleRect: {fileID: 632806971}
   m_Direction: 0
-  m_MinValue: 0.5
+  m_MinValue: 0
   m_MaxValue: 5
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2343,6 +2343,16 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   fovSlider: {fileID: 2014741221}
   fovValue: {fileID: 1831531452}
+  speedSlider: {fileID: 834404082}
+  speedValue: {fileID: 930153775}
+  neighborsRadiusSlider: {fileID: 114551473}
+  neighborsRadiusValue: {fileID: 1493074018}
+  seekRadiusSlider: {fileID: 1431581672}
+  seekRadiusValue: {fileID: 944539888}
+  avoidanceRadiusSlider: {fileID: 263564043}
+  avoidanceRadiusValue: {fileID: 1273254353}
+  driveFactorSlider: {fileID: 1178058851}
+  driveFactorValue: {fileID: 482301606}
   _collapsableContainers:
   - {fileID: 1235129296}
   - {fileID: 1205418752}
@@ -3050,7 +3060,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Neightbour Radius
+  m_text: Neightbor Radius
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f105a5b8089d3904eb732e2201af7934, type: 2}
   m_sharedMaterial: {fileID: -3672720213979730048, guid: f105a5b8089d3904eb732e2201af7934,
@@ -3751,7 +3761,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 17
   m_MaxValue: 40
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 17
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4803,7 +4813,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 1
   m_MaxValue: 40
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5794,7 +5804,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 1
   m_MaxValue: 40
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
