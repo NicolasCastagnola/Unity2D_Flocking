@@ -19,7 +19,7 @@ public class FlockAgent : GridEntity
     //IA2-P2
     public IEnumerable<GridEntity> GetNearby()
     {
-        if (agentFlock == null) return default;
+        if (agentFlock == null || IsDestroying) return default;
 
         var position = transform.position;
         

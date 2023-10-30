@@ -142,7 +142,6 @@ public class Flock : MonoBehaviour
     {
         foreach (var agent in GetTotalAgents)
         {
-            //IA2-P2
             var context = agent.GetNearby().Select(c => c.transform).ToList();
             {
                 var move = behavior.CalculateMove(agent, context, this);

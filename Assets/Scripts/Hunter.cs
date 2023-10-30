@@ -20,8 +20,8 @@ public enum HunterStates : byte
 public class Hunter : GridEntity
 {
     private Transform Target;
-    
     private bool _isRecovering;
+    
     [ShowInInspector, ReadOnly, TabGroup("States")] public string CurrentStateDisplay => _finiteStateMachine?.Current.Name;
     [ShowInInspector, ReadOnly, TabGroup("States")] private EventFSM<HunterStates> _finiteStateMachine;
     
@@ -54,17 +54,11 @@ public class Hunter : GridEntity
         
         return this;
     }
-    private void OnDestroy()
-    {
-        Terminate();
-    }
 
-    private void Terminate()
+    public void Terminate()
     {
         _finiteStateMachine.OnStateUpdated -= StateUpdated;
         _finiteStateMachine?.Terminate();
-        
-        GameManager.Instance.SpatialGrid.UnRegisterEntity(this);
     }
     public void Update() => _finiteStateMachine?.Update();
     private void LateUpdate() => _finiteStateMachine?.LateUpdate();
