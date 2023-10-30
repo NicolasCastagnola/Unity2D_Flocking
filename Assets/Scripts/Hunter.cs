@@ -54,7 +54,6 @@ public class Hunter : GridEntity
         
         return this;
     }
-
     public void Terminate()
     {
         _finiteStateMachine.OnStateUpdated -= StateUpdated;

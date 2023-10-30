@@ -121,29 +121,19 @@ public class SpatialGrid : MonoBehaviour
         fromCoord = Tuple.Create(Utility.Clampi(fromCoord.Item1, 0, width), Utility.Clampi(fromCoord.Item2, 0, height));
         toCoord = Tuple.Create(Utility.Clampi(toCoord.Item1, 0, width), Utility.Clampi(toCoord.Item2, 0, height));
 
-        if (!IsInsideGrid(fromCoord) && !IsInsideGrid(toCoord))
-            return Empty;
-        
+        if (!IsInsideGrid(fromCoord) && !IsInsideGrid(toCoord)) return Empty;
+            
         // Creamos tuplas de cada celda
-        var cols = Generate(fromCoord.Item1, x => x + 1)
-            .TakeWhile(x => x < width && x <= toCoord.Item1);
-
-        var rows = Generate(fromCoord.Item2, y => y + 1)
-            .TakeWhile(y => y < height && y <= toCoord.Item2);
-
-        var cells = cols.SelectMany(
-            col => rows.Select(
-                row => Tuple.Create(col, row)
-            )
-        );
-
+        var cols = Generate(fromCoord.Item1, x => x + 1).TakeWhile(x => x < width && x <= toCoord.Item1);
+        var rows = Generate(fromCoord.Item2, y => y + 1).TakeWhile(y => y < height && y <= toCoord.Item2);
+        var cells = cols.SelectMany(col => rows.Select(row => Tuple.Create(col, row)));
+        var availableGridEntities = cells.SelectMany(cell => buckets[cell.Item1, cell.Item2]).Where(entity => entity.IsDestroying == false);
+        
         // Iteramos las que queden dentro del criterio
-        return cells.SelectMany(cell => buckets[cell.Item1, cell.Item2])
-                    .Where(e => {
-                         Vector3 position;
-                         return from.x <= (position = e.transform.position).x && position.x <= to.x && from.y <= position.y && position.y <= to.y;
-                     })
-                    .Where(entity => filterByPosition(entity.transform.position) && entity.gameObject.activeSelf);
+        return availableGridEntities.Where(e => {
+                                Vector3 position;
+                                return from.x <= (position = e.transform.position).x && position.x <= to.x && from.y <= position.y && position.y <= to.y;})
+                           .Where(entity => filterByPosition(entity.transform.position) && entity.gameObject.activeSelf && entity.IsDestroying == false);
     }
 
     public Tuple<int, int> GetPositionInGrid(Vector3 pos)
